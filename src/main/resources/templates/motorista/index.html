@@ -1,0 +1,41 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="/fragments/head.html :: head "></head>
+<body>
+	<nav th:insert="/fragments/navbar.html :: navbar "></nav>
+	<div class="container-fluid">
+		<table class="table">
+			<tr>
+				<th>#</th>
+				<th>Nome</th>
+				<th>Ações</th>
+			</tr>
+			<tbody>
+				<tr th:each="motorista : ${motoristas}">
+					<td th:text="${motorista.id}"></td>
+					<td th:text="${motorista.nome}"></td>
+					<td>
+						<a th:href="@{/motoristas/{id}/edit (id = ${motorista.id})}">Edit</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<script type="text/javascript">
+		
+		const edit = async (id) => {
+			try{
+						
+				const response = axios.put("/motoristas");
+				console.log(response);
+			}catch(error){
+				console.error(error);
+			
+			}
+		}
+			
+		
+	</script>
+</body>
+<footer th:insert="/fragments/footer.html :: footer"></footer>
+</html>
