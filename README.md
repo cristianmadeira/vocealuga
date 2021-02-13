@@ -3,6 +3,7 @@
 * [Resumo](#resumo)
 * [Tecnologias](#tecnologias)
 * [Subir os Serviços](#configuração)
+* [Acessar o banco de dados externamente](#acessando-o-banco-de-dados)
 
 # Pré-requisitos
 * Ter a porta 8081 e 3305 disponíveis, pois o servidor web java e o MariaDB rodará nessas respectivamente.
@@ -24,3 +25,6 @@
 * Navegue até a raiz do projeto
 * Execute ```docker-compose up --build ```
 * Quando terminar a subida dos serviços, entre no navegador e digite localhost:8081
+
+# Acessando o Banco de Dados
+> Podemos utlizar alguns programas de acesso à banco de dados como, por exemplo: Dbeaver, Mysql Workbench. Este utlizaremos para fazer o acesso. As credenciais estão no arquivo docker-compose.yml. Expor-as-ei algumas, como ```vocealuga``` a qual é o nome do banco, do usuário, da senha. A porta cujo número é 3305 e o HOST o qual é localhost. Basta preenche com essas informações que verás o banco com as respectivas tabelas.
