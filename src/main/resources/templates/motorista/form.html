@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/fragments/head.html :: head"></head>
+<body>
+	<div class="container-fluid">
+		<form class="row g-3" th:object="${motorista}"
+			th:action="${url}" method="POST" id="form">
+			<div class="col-md-6">
+				<label for="nome" class="form-label">Nome:</label>
+				 <input
+					type="text" class="form-control" id="nome" name="nome"
+					th:field="*{Nome}">
+			</div>
+			<div class="col-12">
+				<button type="submit"  class="btn btn-primary">Sign in</button>
+			</div>
+		</form>
+	</div>
+	
+</body>
+</html>

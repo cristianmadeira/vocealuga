@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="/fragments/head.html :: head">
+
+</head>
+<body>
+	<nav th:replace="fragments/nav.html :: nav"></nav>
+	<table class="table table-hover">
+		<thead>
+			<tr>
+				<th>#</th>
+				<th>Nome</th>
+				<th>Ações</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each=" motorista : ${motoristas}">
+				<td th:text="${motorista.id}"></td>
+				<td th:text="${motorista.nome}"></td>
+				<td>
+					<div class="row">
+						<div class="col-2">
+							<a th:href="@{/motoristas/{id}/edit(id = ${motorista.id} )}">
+								<button type="button" class="btn btn-primary">Editar</button>
+							</a>
+						</div>
+						<div class="col-8">
+							<form method="POST" th:action="@{/motoristas/{id}/delete(id = ${motorista.id})}">
+								<button type="submit" class="btn btn-danger">Excluir</button>
+							</form>
+						</div>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</body>
+</html>
