@@ -20,7 +20,7 @@
 
 # Configuração
 * Entre no power shell
-* Verique através do comando ```docker --version ``` e ```docker-compose --version ``` se o docker e o docker-compose estão instalados corretamente 
+* Verifique através do comando ```docker --version ``` e ```docker-compose --version ``` se o docker e o docker-compose estão instalados corretamente 
 * Navegue até a raiz do projeto
 * Execute ```docker-compose up --build ```
 * Quando terminar a subida dos serviços, entre no navegador e digite localhost:8081
