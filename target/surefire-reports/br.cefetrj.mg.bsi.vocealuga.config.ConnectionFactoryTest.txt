@@ -1,0 +1,12 @@
+-------------------------------------------------------------------------------
+Test set: br.cefetrj.mg.bsi.vocealuga.config.ConnectionFactoryTest
+-------------------------------------------------------------------------------
+Tests run: 6, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 0.005 s <<< FAILURE! - in br.cefetrj.mg.bsi.vocealuga.config.ConnectionFactoryTest
+testGetValueOfDatabaseHost  Time elapsed: 0 s  <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected: <localhost> but was: <mariadb-vocealuga>
+	at br.cefetrj.mg.bsi.vocealuga.config.ConnectionFactoryTest.testGetValueOfDatabaseHost(ConnectionFactoryTest.java:42)
+
+testGetUrl  Time elapsed: 0 s  <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected: <jdbc:mysql://localhost:3305/vocealuga> but was: <jdbc:mysql://mariadb-vocealuga:3306/vocealuga>
+	at br.cefetrj.mg.bsi.vocealuga.config.ConnectionFactoryTest.testGetUrl(ConnectionFactoryTest.java:48)
+

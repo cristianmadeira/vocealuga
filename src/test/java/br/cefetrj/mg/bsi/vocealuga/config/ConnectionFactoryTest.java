@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 class ConnectionFactoryTest {
 
+	@SuppressWarnings("unused")
 	private ConnectionFactory conn = ConnectionFactory.getInstance("database-external.properties");
 	
 	

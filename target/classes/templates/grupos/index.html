@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="/fragments/head.html :: head">
+
+</head>
+<body>
+	<nav th:replace="fragments/nav.html :: nav"></nav>
+	<div th:if="${erros}">
+		<div th:replace="fragments/erros.html ::div(${erros})">
+			
+		</div>
+	</div>
+	<div th:else>
+		<div th:replace="fragments/success.html ::div(${success})">
+			
+		</div>
+	</div>
+	<table class="table table-hover">
+		<thead>
+			<tr>
+				<th>#</th>
+				<th>Nome</th>
+				<th>Ações</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each=" grupo : ${grupos}">
+				<td th:text="${grupo.id}"></td>
+				<td th:text="${grupo.nome}"></td>
+				<td>
+					<div class="row">
+						<div class="col-2">
+							<a th:href="@{/grupos/{id}/edit(id = ${grupo.id} )}">
+								<button type="button" class="btn btn-primary">Editar</button>
+							</a>
+						</div>
+						<div class="col-8">
+							<form method="POST" th:action="@{/grupos/{id}/delete(id = ${grupo.id})}">
+								<button type="submit" class="btn btn-danger">Excluir</button>
+							</form>
+						</div>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</body>
+</html>
