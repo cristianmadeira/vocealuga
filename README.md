@@ -18,6 +18,9 @@
 * [Thymeleaf](https://www.thymeleaf.org/)
 * [Docker](https://docker.com)
 * [Docker-compose](https://docs.docker.com/compose/)
+* [JUnit](https://junit.org/junit4)
+* [Cucumber](https://cucumber.io/)
+* [Selenium](https://www.selenium.dev/)
 
 # Configuração
 * Entre no power shell
