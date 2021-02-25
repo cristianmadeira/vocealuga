@@ -10,7 +10,7 @@
 			
 		</div>
 	</div>
-	<div th:else>
+	<div th:if="${success}">
 		<div th:replace="fragments/success.html ::div(${success})">
 			
 		</div>
