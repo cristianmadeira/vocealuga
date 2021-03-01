@@ -9,7 +9,7 @@ import br.cefetrj.mg.bsi.vocealuga.model.Grupo;
 import br.cefetrj.mg.bsi.vocealuga.repository.GrupoRepositoryImpl;
 import br.cefetrj.mg.bsi.vocealuga.repository.IGrupoRepository;
 
-public class GrupoServiceImpl implements IService<Grupo>{
+public class GrupoServiceImpl implements IGrupoService{
 
 	private IGrupoRepository repository = null;
 	
@@ -52,6 +52,11 @@ public class GrupoServiceImpl implements IService<Grupo>{
 		// TODO Auto-generated method stub
 		return this.repository.findAll();
 	}
+
+	
+
+	
+
 	
 	
 }

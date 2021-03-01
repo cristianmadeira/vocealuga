@@ -3,11 +3,11 @@
     "line": 21,
     "elements": [
       {
-        "start_timestamp": "2021-02-24T23:58:37.040Z",
+        "start_timestamp": "2021-02-28T18:39:46.309Z",
         "before": [
           {
             "result": {
-              "duration": 945587000,
+              "duration": 969831000,
               "status": "passed"
             },
             "match": {
@@ -24,7 +24,7 @@
         "steps": [
           {
             "result": {
-              "duration": 2313000,
+              "duration": 1612000,
               "status": "passed"
             },
             "line": 27,
@@ -36,7 +36,7 @@
           },
           {
             "result": {
-              "duration": 427124000,
+              "duration": 3000325000,
               "status": "passed"
             },
             "line": 28,
@@ -48,7 +48,7 @@
           },
           {
             "result": {
-              "duration": 294206000,
+              "duration": 255591000,
               "status": "passed"
             },
             "line": 29,
@@ -66,7 +66,7 @@
           },
           {
             "result": {
-              "duration": 270510000,
+              "duration": 2799507000,
               "status": "passed"
             },
             "line": 30,
@@ -78,9 +78,8 @@
           },
           {
             "result": {
-              "error_message": "org.openqa.selenium.WebDriverException: chrome not reachable\n  (Session info: chrome\u003d88.0.4324.182)\nBuild info: version: \u00273.141.59\u0027, revision: \u0027e82be7d358\u0027, time: \u00272018-11-14T08:17:03\u0027\nSystem info: host: \u0027servidor\u0027, ip: \u0027127.0.1.1\u0027, os.name: \u0027Linux\u0027, os.arch: \u0027amd64\u0027, os.version: \u00274.19.0-14-amd64\u0027, java.version: \u002711.0.9.1\u0027\nDriver info: org.openqa.selenium.chrome.ChromeDriver\nCapabilities {acceptInsecureCerts: false, browserName: chrome, browserVersion: 88.0.4324.182, chrome: {chromedriverVersion: 88.0.4324.96 (68dba2d8a0b14..., userDataDir: /tmp/.com.google.Chrome.N5LIry}, goog:chromeOptions: {debuggerAddress: localhost:37333}, javascriptEnabled: true, networkConnectionEnabled: false, pageLoadStrategy: normal, platform: LINUX, platformName: LINUX, proxy: Proxy(), setWindowRect: true, strictFileInteractability: false, timeouts: {implicit: 0, pageLoad: 300000, script: 30000}, unhandledPromptBehavior: dismiss and notify, webauthn:extension:largeBlob: true, webauthn:virtualAuthenticators: true}\nSession ID: be46f274337237361ec8eef26accf368\n*** Element info: {Using\u003did, value\u003dsuccess-span}\n\tat java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)\n\tat java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)\n\tat java.base/jdk.internal.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)\n\tat java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:490)\n\tat org.openqa.selenium.remote.http.W3CHttpResponseCodec.createException(W3CHttpResponseCodec.java:187)\n\tat org.openqa.selenium.remote.http.W3CHttpResponseCodec.decode(W3CHttpResponseCodec.java:122)\n\tat org.openqa.selenium.remote.http.W3CHttpResponseCodec.decode(W3CHttpResponseCodec.java:49)\n\tat org.openqa.selenium.remote.HttpCommandExecutor.execute(HttpCommandExecutor.java:158)\n\tat org.openqa.selenium.remote.service.DriverCommandExecutor.execute(DriverCommandExecutor.java:83)\n\tat org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:552)\n\tat org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:323)\n\tat org.openqa.selenium.remote.RemoteWebDriver.findElementById(RemoteWebDriver.java:372)\n\tat org.openqa.selenium.By$ById.findElement(By.java:188)\n\tat org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:315)\n\tat org.openqa.selenium.support.ui.ExpectedConditions$7.apply(ExpectedConditions.java:205)\n\tat org.openqa.selenium.support.ui.ExpectedConditions$7.apply(ExpectedConditions.java:201)\n\tat org.openqa.selenium.support.ui.ExpectedConditions$22.apply(ExpectedConditions.java:641)\n\tat org.openqa.selenium.support.ui.ExpectedConditions$22.apply(ExpectedConditions.java:638)\n\tat org.openqa.selenium.support.ui.FluentWait.until(FluentWait.java:249)\n\tat br.cefetrj.mg.bsi.vocealuga.cucumber.step.GrupoStep.verei_msg(GrupoStep.java:65)\n\tat ✽.verei \"Grupo inserido(a)(s) com sucesso.\"(classpath:grupo.feature:31)\n",
-              "duration": 3422969000,
-              "status": "failed"
+              "duration": 187000000,
+              "status": "passed"
             },
             "line": 31,
             "name": "verei \"Grupo inserido(a)(s) com sucesso.\"",
@@ -106,11 +105,11 @@
         ]
       },
       {
-        "start_timestamp": "2021-02-24T23:58:42.513Z",
+        "start_timestamp": "2021-02-28T18:39:53.615Z",
         "before": [
           {
             "result": {
-              "duration": 606051000,
+              "duration": 464241000,
               "status": "passed"
             },
             "match": {
@@ -127,7 +126,7 @@
         "steps": [
           {
             "result": {
-              "duration": 9938000,
+              "duration": 4171000,
               "status": "passed"
             },
             "line": 27,
@@ -139,7 +138,7 @@
           },
           {
             "result": {
-              "duration": 2787877000,
+              "duration": 3212770000,
               "status": "passed"
             },
             "line": 28,
@@ -151,7 +150,7 @@
           },
           {
             "result": {
-              "duration": 107076000,
+              "duration": 152180000,
               "status": "passed"
             },
             "line": 29,
@@ -169,7 +168,7 @@
           },
           {
             "result": {
-              "duration": 547964000,
+              "duration": 6236886000,
               "status": "passed"
             },
             "line": 30,
@@ -181,9 +180,8 @@
           },
           {
             "result": {
-              "error_message": "org.junit.ComparisonFailure: expected:\u003c[O(A) nome não pode está em branco.]\u003e but was:\u003c[Table \u0027vocealuga.grupos\u0027 doesn\u0027t exist]\u003e\n\tat org.junit.Assert.assertEquals(Assert.java:117)\n\tat org.junit.Assert.assertEquals(Assert.java:146)\n\tat br.cefetrj.mg.bsi.vocealuga.cucumber.step.GrupoStep.verei_msg(GrupoStep.java:67)\n\tat ✽.verei \"O(A) nome não pode está em branco.\"(classpath:grupo.feature:31)\n",
-              "duration": 77526000,
-              "status": "failed"
+              "duration": 132813000,
+              "status": "passed"
             },
             "line": 31,
             "name": "verei \"O(A) nome não pode está em branco.\"",

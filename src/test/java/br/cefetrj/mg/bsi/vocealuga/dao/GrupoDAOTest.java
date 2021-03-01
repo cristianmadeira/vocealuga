@@ -16,6 +16,7 @@ import br.cefetrj.mg.bsi.vocealuga.model.Grupo;
 class GrupoDAOTest {
 
 	private Connection conn = ConnectionFactory.getInstance(ConnectionType.EXTERNAL.value).getConn();
+	
 	@Test
 	void testSave() throws SQLException {
 		Grupo m = new Grupo();
@@ -37,7 +38,7 @@ class GrupoDAOTest {
 	@Test
 	void testFindById() throws SQLException, ModelException {
 		GrupoDAO dao =new GrupoDAO(conn);
-		Grupo m = dao.find(26);
+		Grupo m = dao.find(1);
 		String expected="Cristian";
 		String resulted = m.getNome();
 		assertEquals(expected,resulted);

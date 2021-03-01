@@ -1,5 +1,6 @@
 package br.cefetrj.mg.bsi.vocealuga.dao;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -12,4 +13,5 @@ public interface DAO<k> {
 	public void delete(int id)throws SQLException;
 	public k find(int id) throws SQLException,ModelException;
 	public List<k> findAll() throws SQLException,ModelException;
+	public Connection getConn() throws SQLException;
 }

@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import br.cefetrj.mg.bsi.vocealuga.exception.ModelException;
+import br.cefetrj.mg.bsi.vocealuga.model.Grupo;
 
 public interface IRepository<k> {
 
@@ -12,5 +13,6 @@ public interface IRepository<k> {
 	public void delete(int id) throws SQLException;
 	public k findById(int id) throws SQLException, ModelException;
 	public List<k> findAll() throws SQLException, ModelException;
+	
 	
 }

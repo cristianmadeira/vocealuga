@@ -58,6 +58,7 @@ public class GrupoRepositoryImpl implements IGrupoRepository{
 		}
 		throw new ModelException(String.format("%s não existe.",nome));
 	}
+	
 
 	
 }

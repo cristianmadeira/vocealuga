@@ -3,24 +3,27 @@
 <head th:replace="/fragments/head.html :: head"></head>
 <body>
 	<div class="container-fluid">
-		<div th:if="${erros}">
-			<div th:replace="fragments/erros.html ::div(${erros})">
-				
+		<div class="row">
+			<div th:if="${erros}">
+				<div th:replace="fragments/erros.html ::div(${erros})"></div>
 			</div>
 		</div>
-		<form class="row g-3" th:object="${grupo}"
-			th:action="${url}" method="POST" id="form">
-			<div class="col-md-6">
-				<label for="nome" class="form-label">Nome:</label>
-				 <input
-					type="text" class="form-control" id="nome" name="nome"
-					th:field="*{Nome}">
+
+		<form th:object="${grupo}" th:action="${url}" method="POST" id="form">
+			<div class="form-row">
+				<div class="form-group col-md-10">
+					<label for="nome">Nome:</label> <input type="text"
+						class="form-control" id="nome" name="nome" th:field="*{Nome}" />
+				</div>
+
 			</div>
-			<div class="col-12">
-				<button type="submit"  name="button" class="btn btn-primary">Sign in</button>
-			</div>
+			<button type="submit" name="button" class="btn btn-primary">[[${buttonName}]]</button>
+
+
 		</form>
+
+
+
 	</div>
-	
 </body>
 </html>

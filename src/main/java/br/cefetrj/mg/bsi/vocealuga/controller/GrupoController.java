@@ -1,5 +1,7 @@
 package br.cefetrj.mg.bsi.vocealuga.controller;
 
+import static br.cefetrj.mg.bsi.vocealuga.utils.MessageUtils.format;
+
 import java.sql.SQLException;
 import java.util.List;
 
@@ -15,14 +17,14 @@ import br.cefetrj.mg.bsi.vocealuga.enums.MessageEnums;
 import br.cefetrj.mg.bsi.vocealuga.exception.ModelException;
 import br.cefetrj.mg.bsi.vocealuga.model.Grupo;
 import br.cefetrj.mg.bsi.vocealuga.service.GrupoServiceImpl;
-import br.cefetrj.mg.bsi.vocealuga.service.IService;
-import static br.cefetrj.mg.bsi.vocealuga.utils.MessageUtils.format;
+import br.cefetrj.mg.bsi.vocealuga.service.IGrupoService;
+
 @Controller
 @RequestMapping("/grupos")
 public class GrupoController {
 
 	
-	private IService<Grupo> service = null;
+	private IGrupoService service = null;
 	
 	public GrupoController() {
 		// TODO Auto-generated constructor stub
@@ -57,11 +59,13 @@ public class GrupoController {
 		try {
 			this.service.save(grupo);
 			model.addAttribute("success",format(MessageEnums.INSERT_SUCCESS,"Grupo"));
+			return index(model);
 		} catch (SQLException | ModelException e) {
 			// TODO Auto-generated catch block
 			model.addAttribute("erros",e.getMessage());
+			return this.create(model);
 		}
-		return index(model);
+		
 		
 	}
 	
@@ -109,5 +113,7 @@ public class GrupoController {
 		return index(model);
 		
 	}
+	
+	
 	
 }

@@ -1,39 +1,39 @@
 version: '3.5'
 volumes:
-  mariadb-vocealuga-data:
+    mariadb-vocealuga-data:
 services:
-  mariadb-vocealuga:
-    restart: always
-    hostname: mariadb-vocealuga
-    container_name: mariadb-vocealuga
-    image: mariadb
-    volumes:
-      - mariadb-vocealuga-data:/var/lib/mariadb/data
-    ports:
-      - 3305:3306
-    environment:
-      - MYSQL_PASSWORD=vocealuga
-      - MYSQL_USER=vocealuga
-      - MYSQL_DATABASE=vocealuga
-      - MYSQL_ROOT_PASSWORD=admin
-      
-  spring-boot:
-    working_dir: /app
-    restart: always
-    image: maven
-    command: ./mvnw spring-boot:run
-    container_name: spring-boot
-    hostname: spring-boot
-    depends_on:
-      - mariadb-vocealuga
-    ports:
-      - 8081:8080
-    volumes:
-      - ./:/app
-      - "${HOME}/.m2:/root/.m2"
-    environment:
-      - DATABASE_NAME=vocealuga
-      - DATABASE_USER=vocealuga
-      - DATABASE_PASSWORD=vocealuga
-      - DATABASE_HOST=mariadb-vocealuga
-        
+    mariadb-vocealuga:
+        restart: always
+        hostname: mariadb-vocealuga
+        container_name: mariadb-vocealuga
+        image: mariadb
+        volumes:
+            - mariadb-vocealuga-data:/var/lib/mariadb/data
+            - ./database/vocealuga.sql:/docker-entrypoint-initdb.d/vocealuga.sql
+        ports:
+            - 3305:3306
+        environment:
+            - MYSQL_PASSWORD=vocealuga
+            - MYSQL_USER=vocealuga
+            - MYSQL_DATABASE=vocealuga
+            - MYSQL_ROOT_PASSWORD=admin
+
+    spring-boot:
+        working_dir: /app
+        restart: always
+        image: maven
+        command: ./mvnw spring-boot:run
+        container_name: spring-boot
+        hostname: spring-boot
+        depends_on:
+            - mariadb-vocealuga
+        ports:
+            - 8081:8080
+        volumes:
+            - ./:/app
+            - '${HOME}/.m2:/root/.m2'
+        environment:
+            - DATABASE_NAME=vocealuga
+            - DATABASE_USER=vocealuga
+            - DATABASE_PASSWORD=vocealuga
+            - DATABASE_HOST=mariadb-vocealuga

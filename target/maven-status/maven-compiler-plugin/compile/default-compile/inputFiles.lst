@@ -1,4 +1,5 @@
 /app/src/main/java/br/cefetrj/mg/bsi/vocealuga/repository/IRepository.java
+/app/src/main/java/br/cefetrj/mg/bsi/vocealuga/enums/MessageEnums.java
 /app/src/main/java/br/cefetrj/mg/bsi/vocealuga/Main.java
 /app/src/main/java/br/cefetrj/mg/bsi/vocealuga/repository/IGrupoRepository.java
 /app/src/main/java/br/cefetrj/mg/bsi/vocealuga/repository/GrupoRepositoryImpl.java
@@ -12,4 +13,5 @@
 /app/src/main/java/br/cefetrj/mg/bsi/vocealuga/service/IService.java
 /app/src/main/java/br/cefetrj/mg/bsi/vocealuga/service/GrupoServiceImpl.java
 /app/src/main/java/br/cefetrj/mg/bsi/vocealuga/config/ConnectionType.java
+/app/src/main/java/br/cefetrj/mg/bsi/vocealuga/utils/MessageUtils.java
 /app/src/main/java/br/cefetrj/mg/bsi/vocealuga/exception/ModelException.java
