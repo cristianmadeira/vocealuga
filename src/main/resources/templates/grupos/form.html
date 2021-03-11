@@ -4,8 +4,8 @@
 <body>
 	<div class="container-fluid">
 		<div class="row">
-			<div th:if="${erros}">
-				<div th:replace="fragments/erros.html ::div(${erros})"></div>
+			<div class="col-12" th:if="${error}">
+				<div th:replace="fragments/erros.html ::div(${error})"></div>
 			</div>
 		</div>
 

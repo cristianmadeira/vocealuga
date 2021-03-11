@@ -1,17 +1,14 @@
 package br.cefetrj.mg.bsi.vocealuga.dao;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
-
-import br.cefetrj.mg.bsi.vocealuga.exception.ModelException;
 
 public interface DAO<k> {
 
-	public void save(k o) throws SQLException;
-	public void update(k o) throws SQLException;
-	public void delete(int id)throws SQLException;
-	public k find(int id) throws SQLException,ModelException;
-	public List<k> findAll() throws SQLException,ModelException;
-	public Connection getConn() throws SQLException;
+	public k save(k o) throws Exception ;
+	public k update(k o) throws Exception ;
+	public k delete(int id) throws Exception;
+	public k find(int id) throws   Exception ;
+	public List<k> findAll() throws  Exception ;
+	public int getLastId() throws Exception ;
+	
 }

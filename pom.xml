@@ -16,10 +16,9 @@
 	<description>Vocẽ-Aluga: Locadora</description>
 	<properties>
 		<java.version>11</java.version>
-
 		<cucumber.version>6.6.1</cucumber.version>
+		<junit.jupiter.version>5.7.0</junit.jupiter.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
 	</properties>
 	<dependencies>
 		<dependency>
@@ -70,8 +69,9 @@
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-java</artifactId>
-			<version>3.141.59</version>
 		</dependency>
+
+
 
 
 	</dependencies>
@@ -81,6 +81,23 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.6</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

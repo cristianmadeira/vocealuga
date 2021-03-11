@@ -27,12 +27,26 @@ Funcionalidade: Gerenciar grupos
     Dado que eu estou logado como administrador
     E entro na página de cadastro de grupos
     Quando eu preencho o nome do grupo "<nome_grupo>"
-    E aperto em cadastrar
+    E aperto o botão
     Entao verei "<msg>"
 		
 		Exemplos: 
       | nome_grupo 	| msg |
-      | A						| Grupo inserido(a)(s) com sucesso. |
-      | 						| O(A) nome não pode está em branco. |
+      | A						| O(a)(s) grupo foi inserido(a)(s) com sucesso	|
+      | 						| O(a) nome não pode está em branco |
 		
+  @AtualizarGrupos
+  Cenario: Atualizar Grupo
+  	Dado que eu estou logado como administrador
+  	E na pagina de atualizar
+  	Quando eu preencho o nome do grupo "<nome_grupo>"
+  	E aperto o botão
+  	Entao verei "<msg>"
+  	
+  	Exemplos:
+  		| nome_grupo	| msg	|
+  		| ABC					| O(a)(s) grupo foi atualizado(a)(s) com sucesso	|
+  		| 						| O(a) nome não pode está em branco |
+  
+  
   

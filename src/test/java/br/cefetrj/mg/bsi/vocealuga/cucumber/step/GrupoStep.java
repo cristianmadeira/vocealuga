@@ -40,18 +40,26 @@ public class GrupoStep {
 		driver.get("http://localhost:8081/grupos/create");
 
 	}
+	@E("na pagina de atualizar")
+	public void na_pagina_de_atualizar_grupos() {
+		driver.get("http://localhost:8081/grupos");
+		WebElement element = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"table\"]/tbody/tr[1]/td[3]/div/div[1]/a/button")));
+		element.click();
+		
+	}
 
 	@Quando("eu preencho o nome do grupo {string}")
 	public void eu_preencher_o_nome_do_grupo_com(String nome) {
 		// Write code here that turns the phrase above into concrete actions
 		WebElement element = wait.until(ExpectedConditions.elementToBeClickable(By.name("Nome")));
 		this.nome = nome;
+		element.clear();
 		element.sendKeys(nome);
 
 	}
 
-	@E("aperto em cadastrar")
-	public void apertar_em_cadastrar() {
+	@E("aperto o botão")
+	public void apertar_no_botao() {
 		// Write code here that turns the phrase above into concrete actions
 		WebElement button  = wait.until(ExpectedConditions.elementToBeClickable(By.tagName("button")));
 		button.click();
@@ -67,5 +75,9 @@ public class GrupoStep {
 		assertEquals(msg,result);
 		driver.quit();
 	}
+	
+	
+  	
+  		
 
 }

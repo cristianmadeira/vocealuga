@@ -1,8 +1,5 @@
 package br.cefetrj.mg.bsi.vocealuga.controller;
 
-import static br.cefetrj.mg.bsi.vocealuga.utils.MessageUtils.format;
-
-import java.sql.SQLException;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
@@ -13,11 +10,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import br.cefetrj.mg.bsi.vocealuga.enums.MessageEnums;
-import br.cefetrj.mg.bsi.vocealuga.exception.ModelException;
 import br.cefetrj.mg.bsi.vocealuga.model.Grupo;
 import br.cefetrj.mg.bsi.vocealuga.service.GrupoServiceImpl;
 import br.cefetrj.mg.bsi.vocealuga.service.IGrupoService;
+import static br.cefetrj.mg.bsi.vocealuga.utils.MessageUtils.*;
 
 @Controller
 @RequestMapping("/grupos")
@@ -35,11 +31,12 @@ public class GrupoController {
 	public String index(Model model) {
 		try {
 			List<Grupo> grupos = service.findAll();
-			
 			model.addAttribute("grupos",grupos);
-		} catch (SQLException | ModelException e) {
+			if(grupos.isEmpty())
+				throw new Exception("Não há grupos cadastrados.");
+		} catch (Exception  e) {
 			// TODO Auto-generated catch block
-			model.addAttribute("erros",e.getMessage());
+			model.addAttribute("error",e.getMessage());
 			//System.out.println(e.getClass().getName().startsWith("java.sql"));
 		}
 		return "grupos/index";
@@ -58,11 +55,10 @@ public class GrupoController {
 	public String store(@ModelAttribute Grupo grupo, Model model) {
 		try {
 			this.service.save(grupo);
-			model.addAttribute("success",format(MessageEnums.INSERT_SUCCESS,"Grupo"));
+			model.addAttribute("success",getSaveSuccessMessage("grupo"));
 			return index(model);
-		} catch (SQLException | ModelException e) {
-			// TODO Auto-generated catch block
-			model.addAttribute("erros",e.getMessage());
+		} catch (Exception e) {
+			model.addAttribute("error",e.getMessage());
 			return this.create(model);
 		}
 		
@@ -77,9 +73,9 @@ public class GrupoController {
 			model.addAttribute("buttonName","Atualizar");
 			model.addAttribute("url","/grupos/"+id+"/update");
 			return "grupos/form";
-		} catch (SQLException | ModelException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			model.addAttribute("erros",e.getMessage());
+			model.addAttribute("error",e.getMessage());
 			return index(model);
 		}
 		
@@ -89,11 +85,11 @@ public class GrupoController {
 	public String update(@PathVariable("id") int id,@ModelAttribute Grupo grupo, Model model) {
 		try {
 			this.service.update(grupo);
-			model.addAttribute("success","Grupo atualizado com sucesso.");
+			model.addAttribute("success",getUpdateSuccessMessage("grupo"));
 			return index(model);
-		} catch (SQLException | ModelException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			model.addAttribute("erros",e.getMessage());
+			model.addAttribute("error",e.getMessage());
 			return edit(id,model);
 			
 		} 
@@ -105,15 +101,16 @@ public class GrupoController {
 	public String delete(@PathVariable("id") int id, Model model) {
 		try {
 			this.service.delete(id);
-			model.addAttribute("success","Grupo removido com sucesso.");
-		} catch (SQLException e) {
+			model.addAttribute("success",getDeleteSuccessMessage("grupo"));
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			model.addAttribute("erros",e.getMessage()); 
+			model.addAttribute("error",e.getMessage()); 
 		}
 		return index(model);
 		
 	}
 	
-	
+
+		
 	
 }

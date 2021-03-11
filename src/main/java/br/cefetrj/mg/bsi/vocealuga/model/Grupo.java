@@ -1,15 +1,9 @@
 package br.cefetrj.mg.bsi.vocealuga.model;
 
-public class Grupo extends BaseModel{
+public class Grupo extends Model{
 
-	private int id;
 	private String nome;
-	public int getId() {
-		return id;
-	}
-	public void setId(int id) {
-		this.id = id;
-	}
+	
 	public String getNome() {
 		return nome;
 	}
