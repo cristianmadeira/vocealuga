@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MessageUtils.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">vocealuga</a> &gt; <a href="index.source.html" class="el_package">br.cefetrj.mg.bsi.vocealuga.utils</a> &gt; <span class="el_source">MessageUtils.java</span></div><h1>MessageUtils.java</h1><pre class="source lang-java linenums">package br.cefetrj.mg.bsi.vocealuga.utils;
+
+import br.cefetrj.mg.bsi.vocealuga.enums.MessageEnums;
+
+<span class="fc" id="L5">public  class MessageUtils {</span>
+	
+	
+	public static String format(String msg, Object ...args){
+<span class="fc" id="L9">		return String.format(msg,args);</span>
+	}
+	public static String format(MessageEnums msg, Object ...args){
+<span class="fc" id="L12">		return String.format(msg.getValue(),args);</span>
+	}
+	
+	public static String getSaveSuccessMessage(String str) {
+<span class="fc" id="L16">		return format(MessageEnums.SUCCESS,str,&quot;inserido&quot;);</span>
+	}
+	public static String getUpdateSuccessMessage(String str) {
+<span class="fc" id="L19">		return format(MessageEnums.SUCCESS,str,&quot;atualizado&quot;);</span>
+	}
+	public static String getDeleteSuccessMessage(String str) {
+<span class="fc" id="L22">		return format(MessageEnums.SUCCESS,str,&quot;excluído&quot;);</span>
+	}
+	
+	public static String getSaveErrorMessage(String str, String ...details) {
+<span class="fc" id="L26">		String message = str;</span>
+<span class="fc bfc" id="L27" title="All 2 branches covered.">		if(details.length &gt; 0)</span>
+<span class="fc" id="L28">			message = message.concat(format(&quot;: %s&quot;,details[0]));</span>
+<span class="fc" id="L29">		return format(MessageEnums.ERROR,&quot;inserir&quot;,message);</span>
+	}
+	
+	public static String getUpdateErrorMessage(String str, String ...details) {
+<span class="fc" id="L33">		String message = str;</span>
+<span class="fc bfc" id="L34" title="All 2 branches covered.">		if(details.length &gt; 0)</span>
+<span class="fc" id="L35">			message = message.concat(format(&quot;: %s&quot;,details[0]));</span>
+<span class="fc" id="L36">		return format(MessageEnums.ERROR,&quot;atualizar&quot;,message);</span>
+	}
+	public static String getDeleteErrorMessage(String str, String ...details) {
+<span class="fc" id="L39">		String message = str;</span>
+<span class="fc bfc" id="L40" title="All 2 branches covered.">		if(details.length &gt; 0)</span>
+<span class="fc" id="L41">			message = message.concat(format(&quot;: %s&quot;,details[0]));</span>
+<span class="fc" id="L42">		return format(MessageEnums.ERROR,&quot;excluir&quot;,message);</span>
+	}
+	public static String getBlankFieldMessage(String fieldName) {
+<span class="fc" id="L45">		return format(MessageEnums.BLANK_FIELD,fieldName);</span>
+	}
+	public static String getEmptyListMessage(String listName) {
+<span class="fc" id="L48">		return format(MessageEnums.EMPTY_LIST,listName);</span>
+	}
+	public static String getInvalidIdMessage(int id) {
+<span class="fc" id="L51">		return format(MessageEnums.INVALID_ID,id);</span>
+	}
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

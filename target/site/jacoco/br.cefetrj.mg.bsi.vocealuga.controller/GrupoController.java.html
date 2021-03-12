@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GrupoController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">vocealuga</a> &gt; <a href="index.source.html" class="el_package">br.cefetrj.mg.bsi.vocealuga.controller</a> &gt; <span class="el_source">GrupoController.java</span></div><h1>GrupoController.java</h1><pre class="source lang-java linenums">package br.cefetrj.mg.bsi.vocealuga.controller;
+
+import java.util.List;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import br.cefetrj.mg.bsi.vocealuga.model.Grupo;
+import br.cefetrj.mg.bsi.vocealuga.service.GrupoServiceImpl;
+import br.cefetrj.mg.bsi.vocealuga.service.IGrupoService;
+import static br.cefetrj.mg.bsi.vocealuga.utils.MessageUtils.*;
+
+@Controller
+@RequestMapping(&quot;/grupos&quot;)
+public class GrupoController {
+
+	
+<span class="fc" id="L23">	private IGrupoService service = null;</span>
+	
+<span class="fc" id="L25">	public GrupoController() {</span>
+		// TODO Auto-generated constructor stub
+<span class="fc" id="L27">		this.service = new GrupoServiceImpl();</span>
+		
+<span class="fc" id="L29">	}</span>
+	@GetMapping
+	public String index(Model model) {
+		try {
+<span class="fc" id="L33">			List&lt;Grupo&gt; grupos = service.findAll();</span>
+<span class="fc" id="L34">			model.addAttribute(&quot;grupos&quot;,grupos);</span>
+<span class="pc bpc" id="L35" title="1 of 2 branches missed.">			if(grupos.isEmpty())</span>
+<span class="nc" id="L36">				throw new Exception(&quot;Não há grupos cadastrados.&quot;);</span>
+<span class="nc" id="L37">		} catch (Exception  e) {</span>
+			// TODO Auto-generated catch block
+<span class="nc" id="L39">			model.addAttribute(&quot;error&quot;,e.getMessage());</span>
+			//System.out.println(e.getClass().getName().startsWith(&quot;java.sql&quot;));
+<span class="fc" id="L41">		}</span>
+<span class="fc" id="L42">		return &quot;grupos/index&quot;;</span>
+	}
+	
+	@GetMapping(&quot;/create&quot;)
+	public String create(Model model) {
+<span class="fc" id="L47">		model.addAttribute(&quot;grupo&quot;,new Grupo());</span>
+<span class="fc" id="L48">		model.addAttribute(&quot;method&quot;,&quot;POST&quot;);</span>
+<span class="fc" id="L49">		model.addAttribute(&quot;buttonName&quot;,&quot;Cadastrar&quot;);</span>
+<span class="fc" id="L50">		model.addAttribute(&quot;url&quot;,&quot;/grupos/&quot;);</span>
+<span class="fc" id="L51">		return &quot;grupos/form&quot;;</span>
+	}
+	
+	@PostMapping
+	public String store(@ModelAttribute Grupo grupo, Model model) {
+		try {
+<span class="fc" id="L57">			this.service.save(grupo);</span>
+<span class="fc" id="L58">			model.addAttribute(&quot;success&quot;,getSaveSuccessMessage(&quot;grupo&quot;));</span>
+<span class="fc" id="L59">			return index(model);</span>
+<span class="fc" id="L60">		} catch (Exception e) {</span>
+<span class="fc" id="L61">			model.addAttribute(&quot;error&quot;,e.getMessage());</span>
+<span class="fc" id="L62">			return this.create(model);</span>
+		}
+		
+		
+	}
+	
+	@GetMapping(&quot;/{id}/edit&quot;)
+	public String edit(@PathVariable(&quot;id&quot;) int id, Model model) {
+		try {
+<span class="fc" id="L71">			model.addAttribute(&quot;grupo&quot;,this.service.findById(id));</span>
+<span class="fc" id="L72">			model.addAttribute(&quot;method&quot;,&quot;POST&quot;);</span>
+<span class="fc" id="L73">			model.addAttribute(&quot;buttonName&quot;,&quot;Atualizar&quot;);</span>
+<span class="fc" id="L74">			model.addAttribute(&quot;url&quot;,&quot;/grupos/&quot;+id+&quot;/update&quot;);</span>
+<span class="fc" id="L75">			return &quot;grupos/form&quot;;</span>
+<span class="fc" id="L76">		} catch (Exception e) {</span>
+			// TODO Auto-generated catch block
+<span class="fc" id="L78">			model.addAttribute(&quot;error&quot;,e.getMessage());</span>
+<span class="fc" id="L79">			return index(model);</span>
+		}
+		
+	}
+	
+	@PostMapping(&quot;/{id}/update&quot;)
+	public String update(@PathVariable(&quot;id&quot;) int id,@ModelAttribute Grupo grupo, Model model) {
+		try {
+<span class="fc" id="L87">			this.service.update(grupo);</span>
+<span class="fc" id="L88">			model.addAttribute(&quot;success&quot;,getUpdateSuccessMessage(&quot;grupo&quot;));</span>
+<span class="fc" id="L89">			return index(model);</span>
+<span class="fc" id="L90">		} catch (Exception e) {</span>
+			// TODO Auto-generated catch block
+<span class="fc" id="L92">			model.addAttribute(&quot;error&quot;,e.getMessage());</span>
+<span class="fc" id="L93">			return edit(id,model);</span>
+			
+		} 
+		
+		
+		
+	}
+	@PostMapping(&quot;/{id}/delete&quot;)
+	public String delete(@PathVariable(&quot;id&quot;) int id, Model model) {
+		try {
+<span class="fc" id="L103">			this.service.delete(id);</span>
+<span class="fc" id="L104">			model.addAttribute(&quot;success&quot;,getDeleteSuccessMessage(&quot;grupo&quot;));</span>
+<span class="fc" id="L105">		} catch (Exception e) {</span>
+			// TODO Auto-generated catch block
+<span class="fc" id="L107">			model.addAttribute(&quot;error&quot;,e.getMessage()); </span>
+<span class="fc" id="L108">		}</span>
+<span class="fc" id="L109">		return index(model);</span>
+		
+	}
+	
+
+		
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
