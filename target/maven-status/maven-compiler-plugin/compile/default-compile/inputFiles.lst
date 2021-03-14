@@ -4,11 +4,14 @@
 /app/src/main/java/br/cefetrj/mg/bsi/vocealuga/Main.java
 /app/src/main/java/br/cefetrj/mg/bsi/vocealuga/repository/IGrupoRepository.java
 /app/src/main/java/br/cefetrj/mg/bsi/vocealuga/repository/GrupoRepositoryImpl.java
+/app/src/main/java/br/cefetrj/mg/bsi/vocealuga/exception/InvalidIdException.java
+/app/src/main/java/br/cefetrj/mg/bsi/vocealuga/dao/IDAO.java
+/app/src/main/java/br/cefetrj/mg/bsi/vocealuga/exception/EmptyListException.java
 /app/src/main/java/br/cefetrj/mg/bsi/vocealuga/model/Grupo.java
-/app/src/main/java/br/cefetrj/mg/bsi/vocealuga/dao/DAO.java
+/app/src/main/java/br/cefetrj/mg/bsi/vocealuga/exception/ResultNotFoundException.java
 /app/src/main/java/br/cefetrj/mg/bsi/vocealuga/controller/GrupoController.java
+/app/src/main/java/br/cefetrj/mg/bsi/vocealuga/dao/GrupoDAOImpl.java
 /app/src/main/java/br/cefetrj/mg/bsi/vocealuga/controller/IndexController.java
-/app/src/main/java/br/cefetrj/mg/bsi/vocealuga/dao/GrupoDAO.java
 /app/src/main/java/br/cefetrj/mg/bsi/vocealuga/controller/IController.java
 /app/src/main/java/br/cefetrj/mg/bsi/vocealuga/config/ConnectionFactory.java
 /app/src/main/java/br/cefetrj/mg/bsi/vocealuga/service/IGrupoService.java

@@ -1,11 +1,10 @@
 br/cefetrj/mg/bsi/vocealuga/utils/UtilsTest.class
-br/cefetrj/mg/bsi/vocealuga/service/GrupoServiceTest.class
 br/cefetrj/mg/bsi/vocealuga/cucumber/runner/GrupoRunner.class
 br/cefetrj/mg/bsi/vocealuga/dao/GrupoDAOTest.class
-br/cefetrj/mg/bsi/vocealuga/controller/GrupoControllerTest.class
 br/cefetrj/mg/bsi/vocealuga/utils/MessageUtilsTest.class
-br/cefetrj/mg/bsi/vocealuga/config/ConnectionFactoryTest.class
-br/cefetrj/mg/bsi/vocealuga/exception/ModelExceptionTest.class
 br/cefetrj/mg/bsi/vocealuga/cucumber/step/GrupoStep.class
+br/cefetrj/mg/bsi/vocealuga/service/GrupoServiceTest.class
+br/cefetrj/mg/bsi/vocealuga/controller/GrupoControllerTest.class
+br/cefetrj/mg/bsi/vocealuga/config/ConnectionFactoryTest.class
 br/cefetrj/mg/bsi/vocealuga/repository/GrupoRepositoryTest.class
 br/cefetrj/mg/bsi/vocealuga/MainTests.class

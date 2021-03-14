@@ -12,6 +12,8 @@ import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+
+import br.cefetrj.mg.bsi.vocealuga.exception.ResultNotFoundException;
 import br.cefetrj.mg.bsi.vocealuga.model.Grupo;
 
 @TestMethodOrder(OrderAnnotation.class)
@@ -19,28 +21,30 @@ class GrupoRepositoryTest {
 
 	private static IGrupoRepository repository = null;
 	private static Grupo grupo = null;
-	
+
 	private static Grupo create() {
 		Grupo g = new Grupo();
 		g.setId(0);
 		g.setNome("ABC");
 		return g;
 	}
+
 	@BeforeAll
 	static void setUp() {
 		repository = new GrupoRepositoryImpl();
 		grupo = create();
 	}
+
 	@Test
 	@Order(1)
 	void testInstance() {
 		assertNotNull(repository);
 	}
-	
+
 	@Test
 	@Order(2)
 	void testSave() throws Exception {
-		Grupo  result = repository.save(grupo);
+		Grupo result = repository.save(grupo);
 		assertNotNull(result.getCreatedAt());
 		grupo = result;
 	}
@@ -51,23 +55,22 @@ class GrupoRepositoryTest {
 		grupo.setNome("CBA");
 		Grupo result = repository.update(grupo);
 		assertNotNull(result.getUpdatedAt());
-		grupo  = result;
+		grupo = result;
 	}
 
-	
 	@Test
 	@Order(4)
 	void testFindById() throws Exception {
 		Grupo g = repository.findById(grupo.getId());
 		assertEquals(g.getId(), grupo.getId());
-		
+
 	}
 
 	@Test
 	@Order(5)
 	void testFindAll() throws Exception {
 		List<Grupo> grupos = repository.findAll();
-		for(Grupo g : grupos) {
+		for (Grupo g : grupos) {
 			assertNull(g.getDeletedAt());
 		}
 	}
@@ -78,18 +81,22 @@ class GrupoRepositoryTest {
 		String nome = "CBA";
 		Grupo g = repository.findByNome(nome);
 		assertNotNull(g.getCreatedAt());
-		
+
 	}
+
 	@Test
 	@Order(7)
 	void testFindFakeName() {
 		String name = "xyz";
-		assertThrows(Exception.class, ()->{
+		ResultNotFoundException exception = assertThrows(ResultNotFoundException.class, () -> {
 			repository.findByNome(name);
 		});
-		
-		
+		String actual = exception.getMessage();
+		String expected = "O(a) xyz não foi encontrado";
+		assertEquals(expected, actual);
+
 	}
+
 	@Test
 	@Order(8)
 	void testDelete() throws Exception {

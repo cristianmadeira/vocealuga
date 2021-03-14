@@ -16,24 +16,25 @@ public class ConnectionFactory {
 
 	private static Properties props = null;
 	private static String path = null;
-	private  String filename = null;
-	private  String fullpath = null;
+	private String filename = null;
+	private String fullpath = null;
 	private static File file = null;
-	private static FileInputStream  fileInput = null;
+	private static FileInputStream fileInput = null;
 	private static ConnectionFactory instance = null;
-	private  Connection conn = null;
- 
+	private Connection conn = null;
+
 	private final static Logger log = LogManager.getLogger(ConnectionFactory.class);
 
 	private void setUp() throws FileNotFoundException {
 		props = new Properties();
 		path = System.getProperty("user.dir");
 		filename = "database.properties";
-		fullpath = path.concat("/src/main/java/br/cefetrj/mg/bsi/vocealuga/config").concat(String.format("/%s",filename));
+		fullpath = path.concat("/src/main/java/br/cefetrj/mg/bsi/vocealuga/config")
+				.concat(String.format("/%s", filename));
 		file = new File(fullpath);
 		fileInput = new FileInputStream(file);
 	}
-	
+
 	private ConnectionFactory() {
 		try {
 			this.setUp();
@@ -42,26 +43,25 @@ public class ConnectionFactory {
 			log.error(e.getMessage());
 		}
 	}
-	
 
 	public Connection getConn() {
 
 		try {
-			if( conn == null || conn.isClosed())
-				conn = DriverManager.getConnection(getUrl(),getValueOfProps("DATABASE_USER"),getValueOfProps("DATABASE_PASSWORD"));
+			if (conn == null || conn.isClosed())
+				conn = DriverManager.getConnection(getUrl(), getValueOfProps("DATABASE_USER"),
+						getValueOfProps("DATABASE_PASSWORD"));
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			log.error(e.getMessage());
 		}
 		return conn;
 	}
-	
-	public static ConnectionFactory getInstance(){
+
+	public static ConnectionFactory getInstance() {
 		if (instance == null)
-			instance =  new ConnectionFactory();
+			instance = new ConnectionFactory();
 		return instance;
 	}
-	
+
 	public boolean fileIsExist() {
 		return file.exists();
 	}
@@ -70,22 +70,18 @@ public class ConnectionFactory {
 		try {
 			props.load(fileInput);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			log.error(e.getMessage());
 		}
 		return props.getProperty(key);
 	}
-	public  String getUrl() {
-		// TODO Auto-generated method stub
+
+	public String getUrl() {
+
 		String host = getValueOfProps("DATABASE_HOST");
 		int port = Integer.parseInt(getValueOfProps("DATABASE_PORT"));
 		String databaseName = getValueOfProps("DATABASE_NAME");
-		return String.format("jdbc:mysql://%s:%d/%s",host,port,databaseName);
+		return String.format("jdbc:mysql://%s:%d/%s", host, port, databaseName);
 
 	}
-	
-	
-
-
 
 }
