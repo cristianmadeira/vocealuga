@@ -1,8 +1,8 @@
 /app/src/test/java/br/cefetrj/mg/bsi/vocealuga/repository/GrupoRepositoryTest.java
 /app/src/test/java/br/cefetrj/mg/bsi/vocealuga/cucumber/step/GrupoStep.java
 /app/src/test/java/br/cefetrj/mg/bsi/vocealuga/service/GrupoServiceTest.java
-/app/src/test/java/br/cefetrj/mg/bsi/vocealuga/exception/EmptyListExceptionTest.java
 /app/src/test/java/br/cefetrj/mg/bsi/vocealuga/utils/MessageUtilsTest.java
+/app/src/test/java/br/cefetrj/mg/bsi/vocealuga/exception/EmptyListExceptionTest.java
 /app/src/test/java/br/cefetrj/mg/bsi/vocealuga/controller/GrupoControllerTest.java
 /app/src/test/java/br/cefetrj/mg/bsi/vocealuga/exception/ResultNotFoundExceptionTest.java
 /app/src/test/java/br/cefetrj/mg/bsi/vocealuga/service/CargoServiceTest.java
@@ -10,8 +10,8 @@
 /app/src/test/java/br/cefetrj/mg/bsi/vocealuga/MainTests.java
 /app/src/test/java/br/cefetrj/mg/bsi/vocealuga/config/ConnectionFactoryTest.java
 /app/src/test/java/br/cefetrj/mg/bsi/vocealuga/exception/InvalidIdExceptionTest.java
-/app/src/test/java/br/cefetrj/mg/bsi/vocealuga/dao/CargoDAOTest.java
 /app/src/test/java/br/cefetrj/mg/bsi/vocealuga/repository/CargoRepositoryTest.java
+/app/src/test/java/br/cefetrj/mg/bsi/vocealuga/dao/CargoDAOTest.java
 /app/src/test/java/br/cefetrj/mg/bsi/vocealuga/cucumber/runner/GrupoRunner.java
 /app/src/test/java/br/cefetrj/mg/bsi/vocealuga/dao/GrupoDAOTest.java
 /app/src/test/java/br/cefetrj/mg/bsi/vocealuga/utils/UtilsTest.java
