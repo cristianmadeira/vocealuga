@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: br.cefetrj.mg.bsi.vocealuga.dao.GrupoDAOTest
 -------------------------------------------------------------------------------
-Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.255 s - in br.cefetrj.mg.bsi.vocealuga.dao.GrupoDAOTest
+Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.117 s - in br.cefetrj.mg.bsi.vocealuga.dao.GrupoDAOTest

@@ -3,6 +3,7 @@
 /app/src/test/java/br/cefetrj/mg/bsi/vocealuga/service/GrupoServiceTest.java
 /app/src/test/java/br/cefetrj/mg/bsi/vocealuga/utils/MessageUtilsTest.java
 /app/src/test/java/br/cefetrj/mg/bsi/vocealuga/exception/EmptyListExceptionTest.java
+/app/src/test/java/br/cefetrj/mg/bsi/vocealuga/dao/AgenciaDAOTest.java
 /app/src/test/java/br/cefetrj/mg/bsi/vocealuga/controller/GrupoControllerTest.java
 /app/src/test/java/br/cefetrj/mg/bsi/vocealuga/exception/ResultNotFoundExceptionTest.java
 /app/src/test/java/br/cefetrj/mg/bsi/vocealuga/service/CargoServiceTest.java

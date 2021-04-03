@@ -6,5 +6,5 @@ br/cefetrj/mg/bsi/vocealuga/cucumber/step/GrupoStep.class
 br/cefetrj/mg/bsi/vocealuga/service/GrupoServiceTest.class
 br/cefetrj/mg/bsi/vocealuga/controller/GrupoControllerTest.class
 br/cefetrj/mg/bsi/vocealuga/config/ConnectionFactoryTest.class
-br/cefetrj/mg/bsi/vocealuga/MainTests.class
 br/cefetrj/mg/bsi/vocealuga/repository/GrupoRepositoryTest.class
+br/cefetrj/mg/bsi/vocealuga/MainTests.class
