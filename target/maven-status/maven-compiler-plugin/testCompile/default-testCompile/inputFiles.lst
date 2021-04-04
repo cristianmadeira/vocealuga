@@ -1,6 +1,7 @@
 /app/src/test/java/br/cefetrj/mg/bsi/vocealuga/repository/GrupoRepositoryTest.java
 /app/src/test/java/br/cefetrj/mg/bsi/vocealuga/cucumber/step/GrupoStep.java
 /app/src/test/java/br/cefetrj/mg/bsi/vocealuga/service/GrupoServiceTest.java
+/app/src/test/java/br/cefetrj/mg/bsi/vocealuga/repository/AgenciaRepositoryTest.java
 /app/src/test/java/br/cefetrj/mg/bsi/vocealuga/utils/MessageUtilsTest.java
 /app/src/test/java/br/cefetrj/mg/bsi/vocealuga/exception/EmptyListExceptionTest.java
 /app/src/test/java/br/cefetrj/mg/bsi/vocealuga/dao/AgenciaDAOTest.java
