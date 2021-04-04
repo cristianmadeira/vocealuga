@@ -13,7 +13,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import br.cefetrj.mg.bsi.vocealuga.config.ConnectionFactory;
-import br.cefetrj.mg.bsi.vocealuga.exception.EmptyListException;
 import br.cefetrj.mg.bsi.vocealuga.exception.InvalidIdException;
 import br.cefetrj.mg.bsi.vocealuga.model.Agencia;
 import java.sql.Timestamp;
@@ -65,7 +64,6 @@ public class AgenciaDAOImpl implements IDAO<Agencia> {
         String sql = "UPDATE agencias SET nome = ?, cnpj = ?, cep = ?, logradouro = ?, numero = ?, bairro = ?, municipio = ?, uf = ?, updated_at = ? WHERE id = ? ";
         conn.setAutoCommit(false);
         try (PreparedStatement pst = conn.prepareStatement(sql)) {
-            Agencia oldAgencia = this.find(o.getId());
             pst.setString(1, o.getNome());
             pst.setString(2, o.getCnpj());
             pst.setString(3, o.getCep());
@@ -76,17 +74,20 @@ public class AgenciaDAOImpl implements IDAO<Agencia> {
             pst.setString(8, o.getUf());
             o.setUpdatedAt((LocalDateTime.now(ZONE_ID)));
             pst.setTimestamp(9, converterLocalDateTimeToTimestamp(o.getUpdatedAt()));
-            pst.setInt(10,oldAgencia.getId());
-            pst.executeUpdate();
+            pst.setInt(10,o.getId());
+            int affectedRows = pst.executeUpdate();
+            if(affectedRows == 0)
+                throw new InvalidIdException(o.getId());
             conn.commit();
             logger.debug(getUpdateSuccessMessage(TITLE));
             return o;
-        } catch (SQLException | InvalidIdException e) {
+        } catch (SQLException  | InvalidIdException e) {
             conn.rollback();
             logger.error(getUpdateErrorMessage(TITLE, e.getMessage()));
             throw new SQLException(e);
 
         }
+
     }
 
     @Override
@@ -102,7 +103,7 @@ public class AgenciaDAOImpl implements IDAO<Agencia> {
             pst.executeUpdate();
             conn.commit();
             return agencia;
-        } catch (SQLException | InvalidIdException e) {
+        } catch (SQLException e) {
             conn.rollback();
             throw new SQLException(e);
         }
@@ -110,7 +111,7 @@ public class AgenciaDAOImpl implements IDAO<Agencia> {
     }
 
     @Override
-	public Agencia find(int id) throws SQLException, InvalidIdException {
+	public Agencia find(int id) throws SQLException {
 		Connection conn = factory.getConn();
 		Agencia a = null;
 		String sql = "SELECT * FROM agencias WHERE id = ?";
@@ -118,14 +119,11 @@ public class AgenciaDAOImpl implements IDAO<Agencia> {
 			pst.setInt(1, id);
 			try (ResultSet rs = pst.executeQuery()) {
 				if (!rs.next())
-					throw new InvalidIdException(id);
+					throw new SQLException();
 				else
 					a = this.getFilledObject(rs);
 			}
 			return a;
-		} catch (SQLException e) {
-			logger.error("findById:".concat(e.getMessage()));
-			throw new SQLException(e.getMessage());
 		}
     }
 
@@ -141,35 +139,22 @@ public class AgenciaDAOImpl implements IDAO<Agencia> {
             while(rs.next()){
                 agencias.add(this.getFilledObject(rs));
             }
-            if(agencias.isEmpty())
-                throw new EmptyListException(getEmptyListMessage("agências"));
             
             return agencias;
-        }catch(SQLException e){
-            throw new SQLException(e);
-        }
-        catch(EmptyListException e ){
-            throw new SQLException(e);
-        }
+        }        
         
     }
 
     @Override
-    public int getLastId() throws SQLException {
-        return -1;
-        
-    }
-
     public int getLastId(PreparedStatement pst ) throws SQLException {
-        int id = -1;
         try(ResultSet rs = pst.getGeneratedKeys()){
-            if(rs.next()){
-                id = rs.getInt(1);
-            }
-        }catch(SQLException e){
-            throw new SQLException(e);
+            if(rs.next())
+                return rs.getInt(1);
+            else
+                throw new SQLException();
+
         }
-        return id;
+        
         
     }
     @Override

@@ -36,17 +36,18 @@ public class GrupoDAOImpl implements IDAO<Grupo> {
 	public Grupo save(Grupo o) throws SQLException {
 		Connection conn = this.factory.getConn();
 		String sql = "INSERT INTO grupos(nome, created_at) VALUES(?,?)";
-		try (PreparedStatement pst = conn.prepareStatement(sql);) {
+		try (PreparedStatement pst = conn.prepareStatement(sql,PreparedStatement.RETURN_GENERATED_KEYS);) {
 			conn.setAutoCommit(false);
 			pst.setString(1, o.getNome());
-			pst.setTimestamp(2, converterLocalDateTimeToTimestamp(LocalDateTime.now(ZONE_ID)));
+			o.setCreatedAt(LocalDateTime.now(ZONE_ID));
+			pst.setTimestamp(2, converterLocalDateTimeToTimestamp(o.getCreatedAt()));
 			pst.executeUpdate();
+			int id = getLastId(pst);
+			o.setId(id);
 			conn.commit();
-			int id = this.getLastId();
-			o = this.find(id);
 			logger.info(getSaveSuccessMessage(TITLE + o.getNome()));
 			return o;
-		} catch (SQLException | InvalidIdException e) {
+		} catch (SQLException e) {
 			conn.rollback();
 			String errorMsg = getSaveErrorMessage(TITLE, e.getMessage());
 			logger.error(errorMsg);
@@ -61,14 +62,16 @@ public class GrupoDAOImpl implements IDAO<Grupo> {
 		Connection conn = this.factory.getConn();
 		try (PreparedStatement pst = conn.prepareStatement(sql);) {
 			conn.setAutoCommit(false);
-			Grupo oldGrupo = this.find(o.getId());
 			pst.setString(1, o.getNome());
-			pst.setTimestamp(2, converterLocalDateTimeToTimestamp(LocalDateTime.now(ZONE_ID)));
-			pst.setInt(3, oldGrupo.getId());
-			pst.executeUpdate();
+			o.setUpdatedAt(LocalDateTime.now(ZONE_ID));
+			pst.setTimestamp(2, converterLocalDateTimeToTimestamp(o.getUpdatedAt()));
+			pst.setInt(3, o.getId());
+			int affectedRows = pst.executeUpdate();
+			if(affectedRows == 0)
+				throw new InvalidIdException(o.getId());
 			conn.commit();
 			logger.info(getUpdateSuccessMessage(TITLE + o.getNome()));
-			return this.find(o.getId());
+			return o;
 		} catch (SQLException | InvalidIdException e) {
 			conn.rollback();
 			logger.error(getUpdateErrorMessage(TITLE, e.getMessage()));
@@ -78,7 +81,7 @@ public class GrupoDAOImpl implements IDAO<Grupo> {
 	}
 
 	@Override
-	public Grupo delete(int id) throws SQLException {
+	public Grupo delete(int id) throws SQLException{
 		Connection conn = this.factory.getConn();
 		String sql = "UPDATE grupos SET deleted_at = ? WHERE id = ?";
 		try (PreparedStatement pst = conn.prepareStatement(sql);) {
@@ -89,11 +92,12 @@ public class GrupoDAOImpl implements IDAO<Grupo> {
 			conn.commit();
 			logger.info(getDeleteSuccessMessage(TITLE));
 			return this.find(id);
-		} catch (SQLException | InvalidIdException e) {
+		} catch (SQLException e) {
 			conn.rollback();
 			logger.error(getDeleteErrorMessage(TITLE, e.getMessage()));
 			throw new SQLException(getDeleteErrorMessage(TITLE, e.getMessage()));
 		}
+		
 
 	}
 
@@ -106,17 +110,13 @@ public class GrupoDAOImpl implements IDAO<Grupo> {
 		try (PreparedStatement pst = conn.prepareStatement(sql); ResultSet rs = pst.executeQuery();) {
 			while (rs.next())
 				grupos.add(this.getFilledObject(rs));
-
-		} catch (SQLException e) {
-			logger.error(TITLE.concat(e.getMessage()));
-			throw new SQLException(e.getMessage());
-		}
+		} 
 		return grupos;
 
 	}
 
 	@Override
-	public Grupo find(int id) throws SQLException, InvalidIdException {
+	public Grupo find(int id) throws SQLException{
 		Connection conn = this.factory.getConn();
 		Grupo g = null;
 		String sql = "SELECT * FROM grupos WHERE id = ?";
@@ -129,7 +129,7 @@ public class GrupoDAOImpl implements IDAO<Grupo> {
 					g = this.getFilledObject(rs);
 			}
 			return g;
-		} catch (SQLException e) {
+		} catch (SQLException |InvalidIdException e) {
 			logger.error("findById:".concat(e.getMessage()));
 			throw new SQLException(e.getMessage());
 		}
@@ -137,20 +137,14 @@ public class GrupoDAOImpl implements IDAO<Grupo> {
 	}
 
 	@Override
-	public int getLastId() throws SQLException {
-		int id = 0;
-		String sql = "SELECT max(id) as id FROM grupos ;";
-		Connection conn = this.factory.getConn();
-		try (PreparedStatement pst = conn.prepareStatement(sql); ResultSet rs = pst.executeQuery();) {
-
+	public int getLastId(PreparedStatement pst) throws SQLException {
+		try (ResultSet rs = pst.getGeneratedKeys()) {
 			if (rs.next())
-				id = rs.getInt("id");
-
-			return id;
-		} catch (SQLException e) {
-			logger.error(e.getMessage());
-			throw new SQLException(e.getMessage());
+				return rs.getInt(1);
+			else
+				throw new SQLException();
 		}
+		
 
 	}
 

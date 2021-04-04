@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
 import br.cefetrj.mg.bsi.vocealuga.config.ConnectionFactory;
-import br.cefetrj.mg.bsi.vocealuga.exception.InvalidIdException;
+
 import br.cefetrj.mg.bsi.vocealuga.model.Cargo;
 
 @TestMethodOrder(OrderAnnotation.class)
@@ -43,14 +43,16 @@ class CargoDAOTest {
 
     }
 
-    @Test
-    @Order(1)
-    void testGetLastId() throws Exception {
-        int result = dao.getLastId();
-        assertTrue(result >= 0);
-        cargo.setId(result);
-    }
-
+	@Test
+	@Order(1)
+	void testGetLastId() throws SQLException{
+		String wrongSql = "INSERT INTO cargos (VALUES)";
+		Connection conn = ConnectionFactory.getInstance().getConn();
+		PreparedStatement pst = conn.prepareStatement(wrongSql, PreparedStatement.RETURN_GENERATED_KEYS);
+		assertThrows(SQLException.class,()->{
+			dao.getLastId(pst);
+		});
+	}
     @Test
     @Order(2)
     void testSave() throws Exception {
@@ -102,11 +104,10 @@ class CargoDAOTest {
 	@Order(7)
 	void testInvalidId() throws SQLException {
 		int invalidId = -1;
-		String expected = "Id -1 é inválido";
-		InvalidIdException e = assertThrows(InvalidIdException.class, () -> {
+		assertThrows(SQLException.class, () -> {
 			dao.find(invalidId);
 		});
-		assertEquals(expected, e.getMessage());
+		
 	}
 
     

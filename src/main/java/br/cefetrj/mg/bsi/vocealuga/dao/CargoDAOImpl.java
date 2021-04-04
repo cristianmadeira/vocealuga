@@ -36,20 +36,20 @@ public class CargoDAOImpl implements IDAO<Cargo> {
     public Cargo save(Cargo o) throws SQLException {
         Connection conn = this.factory.getConn();
         String sql = "INSERT INTO cargos(nome, created_at) VALUES(?,?)";
-        try (PreparedStatement pst = conn.prepareStatement(sql);) {
+        try (PreparedStatement pst = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);) {
             conn.setAutoCommit(false);
             pst.setString(1, o.getNome());
-            pst.setTimestamp(2, converterLocalDateTimeToTimestamp(LocalDateTime.now(ZONE_ID)));
+            o.setCreatedAt(LocalDateTime.now(ZONE_ID));
+            pst.setTimestamp(2, converterLocalDateTimeToTimestamp(o.getCreatedAt()));
             pst.executeUpdate();
+            int id = this.getLastId(pst);
+            o.setId(id);
             conn.commit();
-            int id = this.getLastId();
-            o = this.find(id);
             logger.info(getSaveSuccessMessage(TITLE + o.getNome()));
-
             return o;
         }
 
-        catch (SQLException | InvalidIdException e) {
+        catch (SQLException e) {
             conn.rollback();
             String errorMsg = getSaveErrorMessage(TITLE, e.getMessage());
             logger.error(errorMsg);
@@ -64,15 +64,16 @@ public class CargoDAOImpl implements IDAO<Cargo> {
         Connection conn = this.factory.getConn();
         try (PreparedStatement pst = conn.prepareStatement(sql);) {
             conn.setAutoCommit(false);
-            Cargo oldCargo = this.find(o.getId());
             pst.setString(1, o.getNome());
-            pst.setTimestamp(2, converterLocalDateTimeToTimestamp(LocalDateTime.now(ZONE_ID)));
-            pst.setInt(3, oldCargo.getId());
-            pst.executeUpdate();
+            o.setUpdatedAt(LocalDateTime.now(ZONE_ID));
+            pst.setTimestamp(2, converterLocalDateTimeToTimestamp(o.getUpdatedAt()));
+            pst.setInt(3, o.getId());
+            int affectedRows = pst.executeUpdate();
+            if (affectedRows  == 0)
+                throw new InvalidIdException(o.getId());
             conn.commit();
             logger.info(getUpdateSuccessMessage(TITLE + o.getNome()));
-
-            return this.find(o.getId());
+            return o;
         }
 
         catch (SQLException | InvalidIdException e) {
@@ -89,16 +90,17 @@ public class CargoDAOImpl implements IDAO<Cargo> {
         String sql = "UPDATE cargos SET deleted_at = ? WHERE id = ?";
         try (PreparedStatement pst = conn.prepareStatement(sql);) {
             conn.setAutoCommit(false);
-            pst.setTimestamp(1, converterLocalDateTimeToTimestamp(LocalDateTime.now(ZONE_ID)));
+            Cargo c  = this.find(id);
+            c.setDeletedAt(LocalDateTime.now(ZONE_ID));
+            pst.setTimestamp(1, converterLocalDateTimeToTimestamp(c.getDeletedAt()));
             pst.setInt(2, id);
             pst.executeUpdate();
             conn.commit();
             logger.info(getDeleteSuccessMessage(TITLE));
-
-            return this.find(id);
+            return c;
         }
 
-        catch (SQLException | InvalidIdException e) {
+        catch (SQLException  e) {
             conn.rollback();
             logger.error(getDeleteErrorMessage(TITLE, e.getMessage()));
             throw new SQLException(getDeleteErrorMessage(TITLE, e.getMessage()));
@@ -117,18 +119,12 @@ public class CargoDAOImpl implements IDAO<Cargo> {
                 cargos.add(this.getFilledObject(rs));
 
         }
-
-        catch (SQLException e) {
-            logger.error(TITLE.concat(e.getMessage()));
-            throw new SQLException(e.getMessage());
-        }
-
         return cargos;
 
     }
 
     @Override
-    public Cargo find(int id) throws SQLException, InvalidIdException {
+    public Cargo find(int id) throws SQLException {
         Connection conn = this.factory.getConn();
         Cargo c = null;
         String sql = "SELECT * FROM cargos WHERE id = ?";
@@ -136,7 +132,7 @@ public class CargoDAOImpl implements IDAO<Cargo> {
             pst.setInt(1, id);
             try (ResultSet rs = pst.executeQuery()) {
                 if (!rs.next())
-                    throw new InvalidIdException(id);
+                    throw new SQLException();
                 else
                     c = this.getFilledObject(rs);
             }
@@ -144,29 +140,15 @@ public class CargoDAOImpl implements IDAO<Cargo> {
             return c;
         }
 
-        catch (SQLException e) {
-            logger.error("findById:".concat(e.getMessage()));
-            throw new SQLException(e.getMessage());
-        }
-
     }
 
     @Override
-    public int getLastId() throws SQLException {
-        int id = 0;
-        String sql = "SELECT max(id) as id FROM cargos ;";
-        Connection conn = this.factory.getConn();
-        try (PreparedStatement pst = conn.prepareStatement(sql); ResultSet rs = pst.executeQuery();) {
-
+    public int getLastId(PreparedStatement pst) throws SQLException {
+        try (ResultSet rs = pst.getGeneratedKeys();) {
             if (rs.next())
-                id = rs.getInt("id");
-
-            return id;
-        }
-
-        catch (SQLException e) {
-            logger.error(e.getMessage());
-            throw new SQLException(e.getMessage());
+                return rs.getInt(1);
+            else
+                throw new SQLException();
         }
 
     }

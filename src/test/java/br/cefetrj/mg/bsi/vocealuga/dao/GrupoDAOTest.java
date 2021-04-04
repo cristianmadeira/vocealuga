@@ -11,6 +11,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import com.mysql.cj.x.protobuf.MysqlxPrepare.Prepare;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
@@ -18,7 +20,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
 import br.cefetrj.mg.bsi.vocealuga.config.ConnectionFactory;
-import br.cefetrj.mg.bsi.vocealuga.exception.InvalidIdException;
 import br.cefetrj.mg.bsi.vocealuga.model.Grupo;
 
 @TestMethodOrder(OrderAnnotation.class)
@@ -41,18 +42,24 @@ class GrupoDAOTest {
 		dao = new GrupoDAOImpl();
 
 	}
-
 	@Test
 	@Order(1)
-	void testGetLastId() throws Exception {
-		int result = dao.getLastId();
-		assertTrue(result >= 0);
-		grupo.setId(result);
-	}
+	void testGetLastId() throws SQLException{
+		
+		String wrongSql = "INSERT INTO grupos (VALUES)";
+		Connection conn = ConnectionFactory.getInstance().getConn();
+		PreparedStatement pst = conn.prepareStatement(wrongSql, PreparedStatement.RETURN_GENERATED_KEYS);
+		assertThrows(SQLException.class,()->{
+			dao.getLastId(pst);
+		});
 
+		
+				
+
+	}
 	@Test
 	@Order(2)
-	void testSave() throws Exception {
+	void testSave() throws SQLException {
 		Grupo g = dao.save(grupo);
 		assertTrue(g.getId() > 0);
 		assertNotNull(g.getCreatedAt());
@@ -102,7 +109,7 @@ class GrupoDAOTest {
 	void testInvalidId() throws SQLException {
 		int invalidId = -1;
 		String expected = "Id -1 é inválido";
-		InvalidIdException e = assertThrows(InvalidIdException.class, () -> {
+		SQLException e = assertThrows(SQLException.class, () -> {
 			dao.find(invalidId);
 		});
 		assertEquals(expected, e.getMessage());
@@ -114,16 +121,16 @@ class GrupoDAOTest {
 		int notFoundId = -1;
 		Grupo g = new Grupo();
 		g.setId(notFoundId);
-		assertThrows(Exception.class, () -> {
+		assertThrows(SQLException.class, () -> {
 			dao.update(g);
 		});
 	}
 
 	@Test
 	@Order(9)
-	void testDeleteWithNotFoundId() throws Exception {
+	void testDeleteWithNotFoundId() throws SQLException {
 		int notFoundId = -1;
-		assertThrows(Exception.class, () -> {
+		assertThrows(SQLException.class, () -> {
 			dao.delete(notFoundId);
 		});
 	}
@@ -150,4 +157,5 @@ class GrupoDAOTest {
 		}
 
 	}
+	
 }

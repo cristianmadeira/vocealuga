@@ -4,13 +4,16 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
-
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
+
+import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 
-import br.cefetrj.mg.bsi.vocealuga.exception.InvalidIdException;
+import br.cefetrj.mg.bsi.vocealuga.config.ConnectionFactory;
 import br.cefetrj.mg.bsi.vocealuga.model.Agencia;
 
 import org.junit.jupiter.api.Order;
@@ -30,12 +33,18 @@ public class AgenciaDAOTest {
         a.setNome("FUNDACAO DE APOIO A ESCOLA TECNICA DO EST.RIO DE JANEIRO");
         a.setBairro("QUINTINO BOCAIUVA");
         a.setCep("21655340");
-        a.setCnpj("31608763000144");
+        //a.setCnpj("31608763000152");
+        a.setCnpj(getFakerCnpj());
         a.setLogradouro("R CLARIMUNDO DE MELO");
         a.setMunicipio("RIO DE JANEIRO");
         a.setNumero("847");
         a.setUf("RJ");
         return a;
+    }
+    private static  String getFakerCnpj(){
+        UUID uuid = UUID.randomUUID();
+        String myRandom = uuid.toString();
+        return myRandom.substring(0,14);
     }
 
     @BeforeAll
@@ -122,7 +131,7 @@ public class AgenciaDAOTest {
     @Order(8)
     public void testFindByInvalidId(){
         int invalidId = -1;
-        assertThrows(InvalidIdException.class,()->{
+        assertThrows(SQLException.class,()->{
             dao.find(invalidId);
         }) ;
     }
@@ -132,6 +141,16 @@ public class AgenciaDAOTest {
     public void testFindAll() throws SQLException{
         int actual = dao.findAll().size();
         assertTrue(actual > 0);
+    }
+    @Test
+    @Order(10)
+    public void testGetLastId() throws SQLException{
+        String wrongSql = "INSERT INTO agencias (VALUES)";
+		Connection conn = ConnectionFactory.getInstance().getConn();
+		PreparedStatement pst = conn.prepareStatement(wrongSql, PreparedStatement.RETURN_GENERATED_KEYS);
+		assertThrows(SQLException.class,()->{
+			dao.getLastId(pst);
+		});
     }
 
 
