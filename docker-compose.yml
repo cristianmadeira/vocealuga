@@ -22,7 +22,7 @@ services:
         working_dir: /app
         restart: always
         image: maven:3.6.3-adoptopenjdk-14
-        command: ./mvnw spring-boot:run
+        command: ./start.sh
         container_name: spring-boot
         hostname: spring-boot
         depends_on:
