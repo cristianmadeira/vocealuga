@@ -1,0 +1,4 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Sat Mar 13 13:26:04 GMT 2021
+@default-central-https\://repo.maven.apache.org/maven2/.lastUpdated=1615641964912
+https\://repo.maven.apache.org/maven2/.error=Could not transfer artifact org.apache.logging.log4j\:log4j-api\:jar\:sources\:2.13.3 from/to central (https\://repo.maven.apache.org/maven2)\: repo.maven.apache.org

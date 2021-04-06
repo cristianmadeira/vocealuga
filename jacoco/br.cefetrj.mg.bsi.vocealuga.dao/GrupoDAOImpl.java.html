@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GrupoDAOImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">vocealuga</a> &gt; <a href="index.source.html" class="el_package">br.cefetrj.mg.bsi.vocealuga.dao</a> &gt; <span class="el_source">GrupoDAOImpl.java</span></div><h1>GrupoDAOImpl.java</h1><pre class="source lang-java linenums">package br.cefetrj.mg.bsi.vocealuga.dao;
+
+import static br.cefetrj.mg.bsi.vocealuga.utils.MessageUtils.getDeleteErrorMessage;
+import static br.cefetrj.mg.bsi.vocealuga.utils.MessageUtils.getDeleteSuccessMessage;
+import static br.cefetrj.mg.bsi.vocealuga.utils.MessageUtils.getSaveErrorMessage;
+import static br.cefetrj.mg.bsi.vocealuga.utils.MessageUtils.getSaveSuccessMessage;
+import static br.cefetrj.mg.bsi.vocealuga.utils.MessageUtils.getUpdateErrorMessage;
+import static br.cefetrj.mg.bsi.vocealuga.utils.MessageUtils.getUpdateSuccessMessage;
+import static br.cefetrj.mg.bsi.vocealuga.utils.Utils.*;
+import br.cefetrj.mg.bsi.vocealuga.config.ConnectionFactory;
+import br.cefetrj.mg.bsi.vocealuga.exception.InvalidIdException;
+import br.cefetrj.mg.bsi.vocealuga.model.Grupo;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+public class GrupoDAOImpl implements IDAO&lt;Grupo&gt; {
+
+<span class="fc" id="L26">	private static final Logger logger = LogManager.getLogger(GrupoDAOImpl.class);</span>
+<span class="fc" id="L27">	private ConnectionFactory factory = null;</span>
+<span class="fc" id="L28">	private static final ZoneId ZONE_ID = ZoneId.of(&quot;America/Sao_Paulo&quot;);</span>
+<span class="fc" id="L29">	private static final String TITLE = &quot;grupo&quot;;</span>
+
+<span class="fc" id="L31">	public GrupoDAOImpl() {</span>
+<span class="fc" id="L32">		this.factory = ConnectionFactory.getInstance();</span>
+<span class="fc" id="L33">	}</span>
+
+	@Override
+	public Grupo save(Grupo o) throws SQLException {
+<span class="fc" id="L37">		Connection conn = this.factory.getConn();</span>
+<span class="fc" id="L38">		String sql = &quot;INSERT INTO grupos(nome, created_at) VALUES(?,?)&quot;;</span>
+<span class="fc" id="L39">		try (PreparedStatement pst = conn.prepareStatement(sql,PreparedStatement.RETURN_GENERATED_KEYS);) {</span>
+<span class="fc" id="L40">			conn.setAutoCommit(false);</span>
+<span class="fc" id="L41">			pst.setString(1, o.getNome());</span>
+<span class="fc" id="L42">			o.setCreatedAt(LocalDateTime.now(ZONE_ID));</span>
+<span class="fc" id="L43">			pst.setTimestamp(2, converterLocalDateTimeToTimestamp(o.getCreatedAt()));</span>
+<span class="fc" id="L44">			pst.executeUpdate();</span>
+<span class="fc" id="L45">			int id = getLastId(pst);</span>
+<span class="fc" id="L46">			o.setId(id);</span>
+<span class="fc" id="L47">			conn.commit();</span>
+<span class="fc" id="L48">			logger.info(getSaveSuccessMessage(TITLE + o.getNome()));</span>
+<span class="fc" id="L49">			return o;</span>
+<span class="fc" id="L50">		} catch (SQLException e) {</span>
+<span class="fc" id="L51">			conn.rollback();</span>
+<span class="fc" id="L52">			String errorMsg = getSaveErrorMessage(TITLE, e.getMessage());</span>
+<span class="fc" id="L53">			logger.error(errorMsg);</span>
+<span class="fc" id="L54">			throw new SQLException(errorMsg);</span>
+		}
+
+	}
+
+	@Override
+	public Grupo update(Grupo o) throws SQLException {
+<span class="fc" id="L61">		String sql = &quot;UPDATE grupos SET nome = ?, updated_at = ? WHERE id = ?&quot;;</span>
+<span class="fc" id="L62">		Connection conn = this.factory.getConn();</span>
+<span class="fc" id="L63">		try (PreparedStatement pst = conn.prepareStatement(sql);) {</span>
+<span class="fc" id="L64">			conn.setAutoCommit(false);</span>
+<span class="fc" id="L65">			pst.setString(1, o.getNome());</span>
+<span class="fc" id="L66">			o.setUpdatedAt(LocalDateTime.now(ZONE_ID));</span>
+<span class="fc" id="L67">			pst.setTimestamp(2, converterLocalDateTimeToTimestamp(o.getUpdatedAt()));</span>
+<span class="fc" id="L68">			pst.setInt(3, o.getId());</span>
+<span class="fc" id="L69">			int affectedRows = pst.executeUpdate();</span>
+<span class="fc bfc" id="L70" title="All 2 branches covered.">			if(affectedRows == 0)</span>
+<span class="fc" id="L71">				throw new InvalidIdException(o.getId());</span>
+<span class="fc" id="L72">			conn.commit();</span>
+<span class="fc" id="L73">			logger.info(getUpdateSuccessMessage(TITLE + o.getNome()));</span>
+<span class="fc" id="L74">			return o;</span>
+<span class="fc" id="L75">		} catch (SQLException | InvalidIdException e) {</span>
+<span class="fc" id="L76">			conn.rollback();</span>
+<span class="fc" id="L77">			logger.error(getUpdateErrorMessage(TITLE, e.getMessage()));</span>
+<span class="fc" id="L78">			throw new SQLException(getUpdateErrorMessage(TITLE, e.getMessage()));</span>
+		}
+
+	}
+
+	@Override
+	public Grupo delete(int id) throws SQLException{
+<span class="fc" id="L85">		Connection conn = this.factory.getConn();</span>
+<span class="fc" id="L86">		String sql = &quot;UPDATE grupos SET deleted_at = ? WHERE id = ?&quot;;</span>
+<span class="fc" id="L87">		try (PreparedStatement pst = conn.prepareStatement(sql);) {</span>
+<span class="fc" id="L88">			conn.setAutoCommit(false);</span>
+<span class="fc" id="L89">			pst.setTimestamp(1, converterLocalDateTimeToTimestamp(LocalDateTime.now(ZONE_ID)));</span>
+<span class="fc" id="L90">			pst.setInt(2, id);</span>
+<span class="fc" id="L91">			pst.executeUpdate();</span>
+<span class="fc" id="L92">			conn.commit();</span>
+<span class="fc" id="L93">			logger.info(getDeleteSuccessMessage(TITLE));</span>
+<span class="fc" id="L94">			return this.find(id);</span>
+<span class="fc" id="L95">		} catch (SQLException e) {</span>
+<span class="fc" id="L96">			conn.rollback();</span>
+<span class="fc" id="L97">			logger.error(getDeleteErrorMessage(TITLE, e.getMessage()));</span>
+<span class="fc" id="L98">			throw new SQLException(getDeleteErrorMessage(TITLE, e.getMessage()));</span>
+		}
+		
+
+	}
+
+	@Override
+	public List&lt;Grupo&gt; findAll() throws SQLException {
+<span class="fc" id="L106">		String sql = &quot;SELECT * FROM grupos&quot;;</span>
+<span class="fc" id="L107">		Connection conn = null;</span>
+<span class="fc" id="L108">		List&lt;Grupo&gt; grupos = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L109">		conn = this.factory.getConn();</span>
+<span class="fc" id="L110">		try (PreparedStatement pst = conn.prepareStatement(sql); ResultSet rs = pst.executeQuery();) {</span>
+<span class="fc bfc" id="L111" title="All 2 branches covered.">			while (rs.next())</span>
+<span class="fc" id="L112">				grupos.add(this.getFilledObject(rs));</span>
+		} 
+<span class="fc" id="L114">		return grupos;</span>
+
+	}
+
+	@Override
+	public Grupo find(int id) throws SQLException{
+<span class="fc" id="L120">		Connection conn = this.factory.getConn();</span>
+<span class="fc" id="L121">		Grupo g = null;</span>
+<span class="fc" id="L122">		String sql = &quot;SELECT * FROM grupos WHERE id = ?&quot;;</span>
+<span class="fc" id="L123">		try (PreparedStatement pst = conn.prepareStatement(sql)) {</span>
+<span class="fc" id="L124">			pst.setInt(1, id);</span>
+<span class="fc" id="L125">			try (ResultSet rs = pst.executeQuery()) {</span>
+<span class="fc bfc" id="L126" title="All 2 branches covered.">				if (!rs.next())</span>
+<span class="fc" id="L127">					throw new InvalidIdException(id);</span>
+				else
+<span class="fc" id="L129">					g = this.getFilledObject(rs);</span>
+			}
+<span class="fc" id="L131">			return g;</span>
+<span class="fc" id="L132">		} catch (SQLException |InvalidIdException e) {</span>
+<span class="fc" id="L133">			logger.error(&quot;findById:&quot;.concat(e.getMessage()));</span>
+<span class="fc" id="L134">			throw new SQLException(e.getMessage());</span>
+		}
+
+	}
+
+	@Override
+	public int getLastId(PreparedStatement pst) throws SQLException {
+<span class="fc" id="L141">		try (ResultSet rs = pst.getGeneratedKeys()) {</span>
+<span class="fc bfc" id="L142" title="All 2 branches covered.">			if (rs.next())</span>
+<span class="fc" id="L143">				return rs.getInt(1);</span>
+			else
+<span class="fc" id="L145">				throw new SQLException();</span>
+		}
+		
+
+	}
+
+	@Override
+	public Grupo getFilledObject(ResultSet rs) throws SQLException {
+<span class="fc" id="L153">		Grupo g = new Grupo();</span>
+<span class="fc" id="L154">		g.setId(rs.getInt(&quot;id&quot;));</span>
+<span class="fc" id="L155">		g.setNome(rs.getString(&quot;nome&quot;));</span>
+<span class="fc" id="L156">		LocalDateTime date = rs.getTimestamp(&quot;created_at&quot;).toLocalDateTime();</span>
+<span class="fc" id="L157">		g.setCreatedAt(date);</span>
+
+<span class="fc bfc" id="L159" title="All 2 branches covered.">		if (rs.getTimestamp(&quot;updated_at&quot;) != null) {</span>
+<span class="fc" id="L160">			date = rs.getTimestamp(&quot;updated_at&quot;).toLocalDateTime();</span>
+<span class="fc" id="L161">			g.setUpdatedAt(date);</span>
+		}
+<span class="fc bfc" id="L163" title="All 2 branches covered.">		if (rs.getTimestamp(&quot;deleted_at&quot;) != null) {</span>
+<span class="fc" id="L164">			date = rs.getTimestamp(&quot;deleted_at&quot;).toLocalDateTime();</span>
+<span class="fc" id="L165">			g.setDeletedAt(date);</span>
+		}
+<span class="fc" id="L167">		return g;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

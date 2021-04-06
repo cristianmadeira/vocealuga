@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AgenciaDAOImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">vocealuga</a> &gt; <a href="index.source.html" class="el_package">br.cefetrj.mg.bsi.vocealuga.dao</a> &gt; <span class="el_source">AgenciaDAOImpl.java</span></div><h1>AgenciaDAOImpl.java</h1><pre class="source lang-java linenums">package br.cefetrj.mg.bsi.vocealuga.dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import br.cefetrj.mg.bsi.vocealuga.config.ConnectionFactory;
+import br.cefetrj.mg.bsi.vocealuga.exception.InvalidIdException;
+import br.cefetrj.mg.bsi.vocealuga.model.Agencia;
+import java.sql.Timestamp;
+
+import static br.cefetrj.mg.bsi.vocealuga.utils.Utils.converterLocalDateTimeToTimestamp;
+import static br.cefetrj.mg.bsi.vocealuga.utils.Utils.converterTimestampToLocalDateTime;
+import static br.cefetrj.mg.bsi.vocealuga.utils.MessageUtils.*;
+
+<span class="fc" id="L24">public class AgenciaDAOImpl implements IDAO&lt;Agencia&gt; {</span>
+
+<span class="fc" id="L26">    private static ConnectionFactory factory = ConnectionFactory.getInstance();</span>
+<span class="fc" id="L27">    private static final ZoneId ZONE_ID = ZoneId.of(&quot;America/Sao_Paulo&quot;);</span>
+<span class="fc" id="L28">    private static final Logger logger = LogManager.getLogger(AgenciaDAOImpl.class);</span>
+<span class="fc" id="L29">    private static final String TITLE = &quot;Agência&quot;;</span>
+
+    @Override
+    public Agencia save(Agencia o) throws SQLException {
+<span class="fc" id="L33">        Connection conn = factory.getConn();</span>
+<span class="fc" id="L34">        String sql = &quot;INSERT INTO agencias(nome,cnpj,cep,logradouro,numero,bairro,municipio,uf,created_at) VALUES(?,?,?,?,?,?,?,?,?);&quot;;</span>
+<span class="fc" id="L35">        conn.setAutoCommit(false);</span>
+<span class="fc" id="L36">        try (PreparedStatement pst = conn.prepareStatement(sql,PreparedStatement.RETURN_GENERATED_KEYS)) {</span>
+<span class="fc" id="L37">            pst.setString(1, o.getNome());</span>
+<span class="fc" id="L38">            pst.setString(2, o.getCnpj());</span>
+<span class="fc" id="L39">            pst.setString(3, o.getCep());</span>
+<span class="fc" id="L40">            pst.setString(4, o.getLogradouro());</span>
+<span class="fc" id="L41">            pst.setString(5, o.getNumero());</span>
+<span class="fc" id="L42">            pst.setString(6, o.getBairro());</span>
+<span class="fc" id="L43">            pst.setString(7, o.getMunicipio());</span>
+<span class="fc" id="L44">            pst.setString(8, o.getUf());</span>
+<span class="fc" id="L45">            o.setCreatedAt((LocalDateTime.now(ZONE_ID)));</span>
+<span class="fc" id="L46">            pst.setTimestamp(9, converterLocalDateTimeToTimestamp(o.getCreatedAt()));</span>
+<span class="fc" id="L47">            pst.executeUpdate();</span>
+<span class="fc" id="L48">            conn.commit();</span>
+<span class="fc" id="L49">            o.setId(this.getLastId(pst));</span>
+<span class="fc" id="L50">            logger.debug(getSaveSuccessMessage(TITLE));</span>
+<span class="fc" id="L51">            return o;</span>
+<span class="fc" id="L52">        } catch (SQLException e) {</span>
+<span class="fc" id="L53">            conn.rollback();</span>
+<span class="fc" id="L54">            logger.error(getSaveErrorMessage(TITLE, e.getMessage()));</span>
+<span class="fc" id="L55">            throw new SQLException(e);</span>
+
+        }
+
+    }
+
+    @Override
+    public Agencia update(Agencia o) throws SQLException {
+<span class="fc" id="L63">        Connection conn = factory.getConn();</span>
+<span class="fc" id="L64">        String sql = &quot;UPDATE agencias SET nome = ?, cnpj = ?, cep = ?, logradouro = ?, numero = ?, bairro = ?, municipio = ?, uf = ?, updated_at = ? WHERE id = ? &quot;;</span>
+<span class="fc" id="L65">        conn.setAutoCommit(false);</span>
+<span class="fc" id="L66">        try (PreparedStatement pst = conn.prepareStatement(sql)) {</span>
+<span class="fc" id="L67">            pst.setString(1, o.getNome());</span>
+<span class="fc" id="L68">            pst.setString(2, o.getCnpj());</span>
+<span class="fc" id="L69">            pst.setString(3, o.getCep());</span>
+<span class="fc" id="L70">            pst.setString(4, o.getLogradouro());</span>
+<span class="fc" id="L71">            pst.setString(5, o.getNumero());</span>
+<span class="fc" id="L72">            pst.setString(6, o.getBairro());</span>
+<span class="fc" id="L73">            pst.setString(7, o.getMunicipio());</span>
+<span class="fc" id="L74">            pst.setString(8, o.getUf());</span>
+<span class="fc" id="L75">            o.setUpdatedAt((LocalDateTime.now(ZONE_ID)));</span>
+<span class="fc" id="L76">            pst.setTimestamp(9, converterLocalDateTimeToTimestamp(o.getUpdatedAt()));</span>
+<span class="fc" id="L77">            pst.setInt(10,o.getId());</span>
+<span class="fc" id="L78">            int affectedRows = pst.executeUpdate();</span>
+<span class="fc bfc" id="L79" title="All 2 branches covered.">            if(affectedRows == 0)</span>
+<span class="fc" id="L80">                throw new InvalidIdException(o.getId());</span>
+<span class="fc" id="L81">            conn.commit();</span>
+<span class="fc" id="L82">            logger.debug(getUpdateSuccessMessage(TITLE));</span>
+<span class="fc" id="L83">            return o;</span>
+<span class="fc" id="L84">        } catch (SQLException  | InvalidIdException e) {</span>
+<span class="fc" id="L85">            conn.rollback();</span>
+<span class="fc" id="L86">            logger.error(getUpdateErrorMessage(TITLE, e.getMessage()));</span>
+<span class="fc" id="L87">            throw new SQLException(e);</span>
+
+        }
+
+    }
+
+    @Override
+    public Agencia delete(int id) throws SQLException {
+<span class="fc" id="L95">        String sql = &quot;UPDATE agencias SET  deleted_at = ? WHERE id = ?&quot;;</span>
+<span class="fc" id="L96">        Connection conn = factory.getConn();</span>
+<span class="fc" id="L97">        conn.setAutoCommit(false);</span>
+<span class="fc" id="L98">        try(PreparedStatement pst = conn.prepareStatement(sql);) {</span>
+<span class="fc" id="L99">            Agencia agencia = this.find(id);</span>
+<span class="fc" id="L100">            agencia.setDeletedAt(LocalDateTime.now());</span>
+<span class="fc" id="L101">            pst.setTimestamp(1,converterLocalDateTimeToTimestamp(agencia.getDeletedAt()));</span>
+<span class="fc" id="L102">            pst.setInt(2,agencia.getId());</span>
+<span class="fc" id="L103">            pst.executeUpdate();</span>
+<span class="fc" id="L104">            conn.commit();</span>
+<span class="fc" id="L105">            return agencia;</span>
+<span class="fc" id="L106">        } catch (SQLException e) {</span>
+<span class="fc" id="L107">            conn.rollback();</span>
+<span class="fc" id="L108">            throw new SQLException(e);</span>
+        }
+        
+    }
+
+    @Override
+	public Agencia find(int id) throws SQLException {
+<span class="fc" id="L115">		Connection conn = factory.getConn();</span>
+<span class="fc" id="L116">		Agencia a = null;</span>
+<span class="fc" id="L117">		String sql = &quot;SELECT * FROM agencias WHERE id = ?&quot;;</span>
+<span class="fc" id="L118">		try (PreparedStatement pst = conn.prepareStatement(sql)) {</span>
+<span class="fc" id="L119">			pst.setInt(1, id);</span>
+<span class="fc" id="L120">			try (ResultSet rs = pst.executeQuery()) {</span>
+<span class="fc bfc" id="L121" title="All 2 branches covered.">				if (!rs.next())</span>
+<span class="fc" id="L122">					throw new SQLException();</span>
+				else
+<span class="fc" id="L124">					a = this.getFilledObject(rs);</span>
+			}
+<span class="fc" id="L126">			return a;</span>
+		}
+    }
+
+    @Override
+    public List&lt;Agencia&gt; findAll() throws SQLException {
+<span class="fc" id="L132">        String sql  = &quot;SELECT * FROM agencias&quot;;</span>
+<span class="fc" id="L133">        Connection conn = factory.getConn();</span>
+<span class="fc" id="L134">        conn.setAutoCommit(false);</span>
+<span class="fc" id="L135">        List&lt;Agencia&gt; agencias  = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L136">        try(PreparedStatement pst = conn.prepareStatement(sql);</span>
+<span class="fc" id="L137">            ResultSet rs = pst.executeQuery();</span>
+        ){
+<span class="fc bfc" id="L139" title="All 2 branches covered.">            while(rs.next()){</span>
+<span class="fc" id="L140">                agencias.add(this.getFilledObject(rs));</span>
+            }
+            
+<span class="fc" id="L143">            return agencias;</span>
+        }        
+        
+    }
+
+    @Override
+    public int getLastId(PreparedStatement pst ) throws SQLException {
+<span class="fc" id="L150">        try(ResultSet rs = pst.getGeneratedKeys()){</span>
+<span class="fc bfc" id="L151" title="All 2 branches covered.">            if(rs.next())</span>
+<span class="fc" id="L152">                return rs.getInt(1);</span>
+            else
+<span class="fc" id="L154">                throw new SQLException();</span>
+
+        }
+        
+        
+    }
+    @Override
+    public Agencia getFilledObject(ResultSet rs) throws SQLException {
+<span class="fc" id="L162">        Timestamp aux = null;</span>
+<span class="fc" id="L163">        Agencia a = new Agencia();</span>
+<span class="fc" id="L164">        a.setId(rs.getInt(&quot;id&quot;));</span>
+<span class="fc" id="L165">        a.setNome(rs.getString(&quot;nome&quot;));</span>
+<span class="fc" id="L166">        a.setBairro(rs.getString(&quot;bairro&quot;));</span>
+<span class="fc" id="L167">        a.setCep(rs.getString(&quot;cep&quot;));</span>
+<span class="fc" id="L168">        a.setCnpj(rs.getString(&quot;cnpj&quot;));</span>
+<span class="fc" id="L169">        a.setCreatedAt(converterTimestampToLocalDateTime(rs.getTimestamp(&quot;created_at&quot;)));</span>
+<span class="fc" id="L170">        aux = rs.getTimestamp(&quot;deleted_at&quot;);</span>
+<span class="fc bfc" id="L171" title="All 2 branches covered.">        if( aux != null)</span>
+<span class="fc" id="L172">            a.setDeletedAt(converterTimestampToLocalDateTime(aux));</span>
+<span class="fc" id="L173">        aux = rs.getTimestamp(&quot;updated_at&quot;);</span>
+<span class="fc bfc" id="L174" title="All 2 branches covered.">        if(aux != null)</span>
+<span class="fc" id="L175">            a.setUpdatedAt(converterTimestampToLocalDateTime(aux));</span>
+<span class="fc" id="L176">        a.setLogradouro(rs.getString(&quot;logradouro&quot;));</span>
+<span class="fc" id="L177">        a.setMunicipio(rs.getString(&quot;municipio&quot;));</span>
+<span class="fc" id="L178">        a.setNumero(rs.getString(&quot;numero&quot;));</span>
+<span class="fc" id="L179">        a.setUf(rs.getString(&quot;uf&quot;));</span>
+        
+<span class="fc" id="L181">        return a;</span>
+        
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

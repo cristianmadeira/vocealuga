@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="/fragments/head.html :: head"></head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12" th:if="${error}">
+                <div th:replace="fragments/erros.html ::div(${error})"></div>
+            </div>
+        </div>
+
+        <form th:object="${cargo}" th:action="${url}" method="POST" id="form">
+            <div class="form-row">
+                <div class="form-group col-md-10">
+                    <label for="nome">Nome:</label> <input type="text" class="form-control" id="nome" name="nome"
+                        th:field="*{Nome}" />
+                </div>
+
+            </div>
+            <button type="submit" name="button" class="btn btn-primary">[[${buttonName}]]</button>
+
+
+        </form>
+
+
+
+    </div>
+</body>
+
+</html>

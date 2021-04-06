@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CargoController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">vocealuga</a> &gt; <a href="index.source.html" class="el_package">br.cefetrj.mg.bsi.vocealuga.controller</a> &gt; <span class="el_source">CargoController.java</span></div><h1>CargoController.java</h1><pre class="source lang-java linenums">package br.cefetrj.mg.bsi.vocealuga.controller;
+
+import java.util.List;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import br.cefetrj.mg.bsi.vocealuga.model.Cargo;
+import br.cefetrj.mg.bsi.vocealuga.service.CargoServiceImpl;
+import br.cefetrj.mg.bsi.vocealuga.service.ICargoService;
+import static br.cefetrj.mg.bsi.vocealuga.utils.MessageUtils.*;
+
+@Controller
+@RequestMapping(&quot;/cargos&quot;)
+public class CargoController {
+
+<span class="fc" id="L22">    private ICargoService service = null;</span>
+
+<span class="fc" id="L24">    public CargoController() {</span>
+
+<span class="fc" id="L26">        this.service = new CargoServiceImpl();</span>
+<span class="fc" id="L27">    }</span>
+
+    @GetMapping
+    public String index(Model model) {
+        try {
+<span class="fc" id="L32">            List&lt;Cargo&gt; cargos = service.findAll();</span>
+<span class="fc" id="L33">            model.addAttribute(&quot;cargos&quot;, cargos);</span>
+<span class="fc bfc" id="L34" title="All 2 branches covered.">            if (cargos.isEmpty())</span>
+<span class="fc" id="L35">                throw new Exception(&quot;Não há cargos cadastrados.&quot;);</span>
+<span class="fc" id="L36">        } catch (Exception e) {</span>
+
+<span class="fc" id="L38">            model.addAttribute(&quot;error&quot;, e.getMessage());</span>
+            // System.out.println(e.getClass().getName().startsWith(&quot;java.sql&quot;));
+        }
+
+<span class="fc" id="L42">        return &quot;cargos/index&quot;;</span>
+    }
+
+    @GetMapping(&quot;/create&quot;)
+    public String create(Model model) {
+<span class="fc" id="L47">        model.addAttribute(&quot;cargo&quot;, new Cargo());</span>
+<span class="fc" id="L48">        model.addAttribute(&quot;method&quot;, &quot;POST&quot;);</span>
+<span class="fc" id="L49">        model.addAttribute(&quot;buttonName&quot;, &quot;Cadastrar&quot;);</span>
+<span class="fc" id="L50">        model.addAttribute(&quot;url&quot;, &quot;/cargos/&quot;);</span>
+
+<span class="fc" id="L52">        return &quot;cargos/form&quot;;</span>
+    }
+
+    @PostMapping
+    public String store(@ModelAttribute Cargo cargo, Model model) {
+        try {
+<span class="fc" id="L58">            this.service.save(cargo);</span>
+<span class="fc" id="L59">            model.addAttribute(&quot;success&quot;, getSaveSuccessMessage(&quot;cargo&quot;));</span>
+
+<span class="fc" id="L61">            return index(model);</span>
+<span class="fc" id="L62">        } catch (Exception e) {</span>
+<span class="fc" id="L63">            model.addAttribute(&quot;error&quot;, e.getMessage());</span>
+
+<span class="fc" id="L65">            return this.create(model);</span>
+        }
+
+    }
+
+    @GetMapping(&quot;/{id}/edit&quot;)
+    public String edit(@PathVariable(&quot;id&quot;) int id, Model model) {
+        try {
+<span class="fc" id="L73">            model.addAttribute(&quot;cargo&quot;, this.service.findById(id));</span>
+<span class="fc" id="L74">            model.addAttribute(&quot;method&quot;, &quot;POST&quot;);</span>
+<span class="fc" id="L75">            model.addAttribute(&quot;buttonName&quot;, &quot;Atualizar&quot;);</span>
+<span class="fc" id="L76">            model.addAttribute(&quot;url&quot;, &quot;/cargos/&quot; + id + &quot;/update&quot;);</span>
+
+<span class="fc" id="L78">            return &quot;cargos/form&quot;;</span>
+<span class="fc" id="L79">        } catch (Exception e) {</span>
+
+<span class="fc" id="L81">            model.addAttribute(&quot;error&quot;, e.getMessage());</span>
+<span class="fc" id="L82">            return index(model);</span>
+        }
+
+    }
+
+    @PostMapping(&quot;/{id}/update&quot;)
+    public String update(@PathVariable(&quot;id&quot;) int id, @ModelAttribute Cargo cargo, Model model) {
+        try {
+<span class="fc" id="L90">            this.service.update(cargo);</span>
+<span class="fc" id="L91">            model.addAttribute(&quot;success&quot;, getUpdateSuccessMessage(&quot;cargo&quot;));</span>
+
+<span class="fc" id="L93">            return index(model);</span>
+<span class="fc" id="L94">        } catch (Exception e) {</span>
+
+<span class="fc" id="L96">            model.addAttribute(&quot;error&quot;, e.getMessage());</span>
+
+<span class="fc" id="L98">            return edit(id, model);</span>
+
+        }
+
+    }
+
+    @PostMapping(&quot;/{id}/delete&quot;)
+    public String delete(@PathVariable(&quot;id&quot;) int id, Model model) {
+        try {
+<span class="fc" id="L107">            this.service.delete(id);</span>
+<span class="fc" id="L108">            model.addAttribute(&quot;success&quot;, getDeleteSuccessMessage(&quot;cargo&quot;));</span>
+<span class="fc" id="L109">        } catch (Exception e) {</span>
+<span class="fc" id="L110">            model.addAttribute(&quot;error&quot;, e.getMessage());</span>
+        }
+<span class="fc" id="L112">        return index(model);</span>
+
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

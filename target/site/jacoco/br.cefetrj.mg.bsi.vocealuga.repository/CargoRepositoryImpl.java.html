@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CargoRepositoryImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">vocealuga</a> &gt; <a href="index.source.html" class="el_package">br.cefetrj.mg.bsi.vocealuga.repository</a> &gt; <span class="el_source">CargoRepositoryImpl.java</span></div><h1>CargoRepositoryImpl.java</h1><pre class="source lang-java linenums">package br.cefetrj.mg.bsi.vocealuga.repository;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import br.cefetrj.mg.bsi.vocealuga.exception.ResultNotFoundException;
+import br.cefetrj.mg.bsi.vocealuga.dao.IDAO;
+import br.cefetrj.mg.bsi.vocealuga.dao.CargoDAOImpl;
+import br.cefetrj.mg.bsi.vocealuga.model.Cargo;
+
+public class CargoRepositoryImpl implements ICargoRepository {
+
+<span class="fc" id="L13">    private IDAO&lt;Cargo&gt; dao = null;</span>
+
+<span class="fc" id="L15">    public CargoRepositoryImpl() {</span>
+<span class="fc" id="L16">        this.dao = new CargoDAOImpl();</span>
+<span class="fc" id="L17">    }</span>
+
+    @Override
+    public Cargo save(Cargo o) throws Exception {
+
+<span class="fc" id="L22">        return this.dao.save(o);</span>
+    }
+
+    @Override
+    public Cargo update(Cargo o) throws Exception {
+
+<span class="fc" id="L28">        return this.dao.update(o);</span>
+    }
+
+    @Override
+    public Cargo delete(int id) throws Exception {
+
+<span class="fc" id="L34">        return this.dao.delete(id);</span>
+    }
+
+    @Override
+    public Cargo findById(int id) throws Exception {
+
+<span class="fc" id="L40">        return this.dao.find(id);</span>
+    }
+
+    @Override
+    public List&lt;Cargo&gt; findAll() throws Exception {
+<span class="fc" id="L45">        List&lt;Cargo&gt; cargosWithoutTrash = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L46">        List&lt;Cargo&gt; cargos = this.dao.findAll();</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">        for (Cargo c : cargos) {</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">            if (c.getDeletedAt() == null)</span>
+<span class="fc" id="L49">                cargosWithoutTrash.add(c);</span>
+        }
+<span class="fc" id="L51">        return cargosWithoutTrash;</span>
+    }
+
+    @Override
+    public Cargo findByNome(String nome) throws Exception {
+<span class="fc" id="L56">        List&lt;Cargo&gt; cargos = this.findAll();</span>
+<span class="fc bfc" id="L57" title="All 2 branches covered.">        for (Cargo c : cargos) {</span>
+<span class="fc bfc" id="L58" title="All 2 branches covered.">            if (c.getNome().equalsIgnoreCase(nome))</span>
+<span class="fc" id="L59">                return c;</span>
+        }
+<span class="fc" id="L61">        throw new ResultNotFoundException(nome);</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
