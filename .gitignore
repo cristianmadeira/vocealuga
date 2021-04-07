@@ -34,4 +34,4 @@ target/*
 .settings
 .settings/
 .vscode/
-src/java/br/cefetrj/mg/bsi/vocealuga/config/database.properties
+database.properties

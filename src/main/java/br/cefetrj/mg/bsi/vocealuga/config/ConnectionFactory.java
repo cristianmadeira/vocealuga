@@ -29,7 +29,7 @@ public class ConnectionFactory {
 		props = new Properties();
 		path = System.getProperty("user.dir");
 		filename = "database.properties";
-		fullpath = path.concat("/src/main/java/br/cefetrj/mg/bsi/vocealuga/config")
+		fullpath = path
 				.concat(String.format("/%s", filename));
 		file = new File(fullpath);
 		fileInput = new FileInputStream(file);
