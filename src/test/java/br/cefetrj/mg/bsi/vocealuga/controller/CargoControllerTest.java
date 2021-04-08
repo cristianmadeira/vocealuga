@@ -71,11 +71,6 @@ class CargoControllerTest {
         final Model model = new ExtendedModelMap();
         controller.index(model);
 
-        cargos = (List<Cargo>) model.asMap().get("cargos");
-        for (Cargo c : cargos) {
-            assertNotNull(c.getCreatedAt());
-            assertNull(c.getDeletedAt());
-        }
 
     }
 

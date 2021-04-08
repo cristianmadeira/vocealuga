@@ -1,7 +1,6 @@
 package br.cefetrj.mg.bsi.vocealuga.controller;
 
-import java.util.List;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,34 +10,22 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import br.cefetrj.mg.bsi.vocealuga.model.Cargo;
-import br.cefetrj.mg.bsi.vocealuga.service.CargoServiceImpl;
-import br.cefetrj.mg.bsi.vocealuga.service.ICargoService;
+import br.cefetrj.mg.bsi.vocealuga.repository.CargoRepository;
+
 import static br.cefetrj.mg.bsi.vocealuga.utils.MessageUtils.*;
 
 @Controller
 @RequestMapping("/cargos")
 public class CargoController {
 
-    private ICargoService service = null;
+    @Autowired
+    private CargoRepository repository;
 
-    public CargoController() {
-
-        this.service = new CargoServiceImpl();
-    }
+    
 
     @GetMapping
     public String index(Model model) {
-        try {
-            List<Cargo> cargos = service.findAll();
-            model.addAttribute("cargos", cargos);
-            if (cargos.isEmpty())
-                throw new Exception("Não há cargos cadastrados.");
-        } catch (Exception e) {
-
-            model.addAttribute("error", e.getMessage());
-            // System.out.println(e.getClass().getName().startsWith("java.sql"));
-        }
-
+        model.addAttribute("cargos", this.repository.findAll());
         return "cargos/index";
     }
 
@@ -48,14 +35,13 @@ public class CargoController {
         model.addAttribute("method", "POST");
         model.addAttribute("buttonName", "Cadastrar");
         model.addAttribute("url", "/cargos/");
-
         return "cargos/form";
     }
 
     @PostMapping
     public String store(@ModelAttribute Cargo cargo, Model model) {
         try {
-            this.service.save(cargo);
+            this.repository.save(cargo);
             model.addAttribute("success", getSaveSuccessMessage("cargo"));
 
             return index(model);
@@ -70,7 +56,7 @@ public class CargoController {
     @GetMapping("/{id}/edit")
     public String edit(@PathVariable("id") int id, Model model) {
         try {
-            model.addAttribute("cargo", this.service.findById(id));
+            model.addAttribute("cargo", this.repository.findById(id));
             model.addAttribute("method", "POST");
             model.addAttribute("buttonName", "Atualizar");
             model.addAttribute("url", "/cargos/" + id + "/update");
@@ -87,7 +73,7 @@ public class CargoController {
     @PostMapping("/{id}/update")
     public String update(@PathVariable("id") int id, @ModelAttribute Cargo cargo, Model model) {
         try {
-            this.service.update(cargo);
+            this.repository.save(cargo);
             model.addAttribute("success", getUpdateSuccessMessage("cargo"));
 
             return index(model);
@@ -104,7 +90,7 @@ public class CargoController {
     @PostMapping("/{id}/delete")
     public String delete(@PathVariable("id") int id, Model model) {
         try {
-            this.service.delete(id);
+            this.repository.deleteById(id);
             model.addAttribute("success", getDeleteSuccessMessage("cargo"));
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());

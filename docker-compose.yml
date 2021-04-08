@@ -9,7 +9,6 @@ services:
         image: mariadb
         volumes:
             - mariadb-vocealuga-data:/var/lib/mariadb/data
-            - ./database/vocealuga.sql:/docker-entrypoint-initdb.d/vocealuga.sql
         ports:
             - 3305:3306
         environment:
@@ -27,6 +26,9 @@ services:
         hostname: spring-boot
         depends_on:
             - mariadb-vocealuga
+        
+        expose:
+            - 5000
         ports:
             - 8081:8080
         volumes:
@@ -37,3 +39,4 @@ services:
             - DATABASE_USER=vocealuga
             - DATABASE_PASSWORD=vocealuga
             - DATABASE_HOST=mariadb-vocealuga
+            - DATABASE_PORT=3306

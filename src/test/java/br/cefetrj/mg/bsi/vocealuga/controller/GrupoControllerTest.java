@@ -1,20 +1,15 @@
 package br.cefetrj.mg.bsi.vocealuga.controller;
 
-import static br.cefetrj.mg.bsi.vocealuga.utils.MessageUtils.getBlankFieldMessage;
 import static br.cefetrj.mg.bsi.vocealuga.utils.MessageUtils.getDeleteSuccessMessage;
 import static br.cefetrj.mg.bsi.vocealuga.utils.MessageUtils.getSaveSuccessMessage;
 import static br.cefetrj.mg.bsi.vocealuga.utils.MessageUtils.getUpdateSuccessMessage;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -23,10 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.ui.ExtendedModelMap;
-import org.springframework.ui.Model;
 
 import br.cefetrj.mg.bsi.vocealuga.model.Grupo;
+import br.cefetrj.mg.bsi.vocealuga.repository.GrupoRepository;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -38,8 +32,17 @@ class GrupoControllerTest {
 
 	@Autowired
 	private MockMvc mvc;
-	private static List<Grupo> grupos = new ArrayList<>();
 
+	@Autowired
+	private GrupoRepository repository;
+
+	private static Grupo grupo = new Grupo();
+
+	@BeforeEach
+	public  void setUp(){
+		grupo.setNome("Nome Válido");
+		grupo = repository.save(grupo);
+	}
 	@Test
 	@Order(1)
 	void testGrupoController() {
@@ -49,97 +52,99 @@ class GrupoControllerTest {
 	@Test
 	@Order(2)
 	void testCreate() throws Exception {
-
-		this.mvc.perform(get("/grupos/create")).andExpect(status().isOk()).andExpect(model().attributeExists("grupo"))
-				.andExpect(view().name("grupos/form"));
+		this.mvc.perform(get("/grupos/create"))
+			.andExpect(status().isOk())
+			.andExpect(model().attributeExists("grupo"))
+			.andExpect(model().attributeExists("action"))
+			.andExpect(model().attributeExists("method"))
+			.andExpect(view().name("grupos/form"));
 	}
 
 	@Test
 	@Order(3)
 	void testStore() throws Exception {
-		this.mvc.perform(post("/grupos").param("nome", "Teste nome mock")).andExpect(status().isOk())
-				.andExpect(model().attributeExists("success"))
-				.andExpect(model().attribute("success", getSaveSuccessMessage("grupo")));
+		this.mvc.perform(post("/grupos")
+			.param("nome", "Teste nome mock"))
+			.andExpect(status().isOk())
+			.andExpect(model().attributeExists("success"))
+			.andExpect(model().attribute("success", getSaveSuccessMessage("grupo")));
 	}
 
 	@Test
 	@Order(4)
-	void testIndex() throws Exception {
-		this.mvc.perform(get("/grupos")).andExpect(status().isOk()).andExpect(model().attributeExists("grupos"))
-				.andExpect(model().attributeDoesNotExist("error"));
-
-		final Model model = new ExtendedModelMap();
-		controller.index(model);
-
-		grupos = (List<Grupo>) model.asMap().get("grupos");
-		for (Grupo g : grupos) {
-			assertNotNull(g.getCreatedAt());
-			assertNull(g.getDeletedAt());
-		}
-
+	void testStoreWithInvalidParams() throws Exception{
+		this.mvc.perform(post("/grupos")
+		.param("Nome","1234")
+		)
+		.andExpect(model().attributeHasFieldErrors("grupo", "nome"))
+		.andExpect(status().isOk())
+		;
 	}
 
 	@Test
 	@Order(5)
-	void testEdit() throws Exception {
-		Grupo g = grupos.get(grupos.size() - 1);
-		assertNotNull(g);
-		this.mvc.perform(get("/grupos/{id}/edit", g.getId())).andExpect(status().isOk())
-				.andExpect(view().name("grupos/form"));
-
+	void testIndex() throws Exception {
+		this.mvc.perform(get("/grupos"))
+			.andExpect(status().isOk())
+			.andExpect(model().attributeExists("grupos"))
+			.andExpect(model().attributeDoesNotExist("error"));
+			
+		
+		
 	}
 
 	@Test
 	@Order(6)
-	void testUpdate() throws Exception {
-		Grupo g = grupos.get(grupos.size() - 1);
-		assertNotNull(g);
-		this.mvc.perform(post("/grupos/{id}/update", g.getId()).param("nome", "new Name")).andExpect(status().isOk())
-				.andExpect(model().attributeExists("success"))
-				.andExpect(model().attribute("success", getUpdateSuccessMessage("grupo")));
+	void testEdit() throws Exception {
+		this.mvc.perform(get("/grupos/{id}/edit", grupo.getId()))
+			.andExpect(status().isOk())
+			.andExpect(view().name("grupos/form"));
+
 	}
 
 	@Test
 	@Order(7)
+	void testUpdate() throws Exception {
+		this.mvc.perform(post("/grupos/{id}/update", grupo.getId())
+			.param("nome", "new Name"))
+			.andExpect(status().isOk())
+			.andExpect(model().attributeExists("success"))
+			.andExpect(model().attribute("success", getUpdateSuccessMessage("grupo")));
+	}
+
+	@Test
+	@Order(8)
 	void testDelete() throws Exception {
-		Grupo g = grupos.get(grupos.size() - 1);
-		assertNotNull(g);
-		this.mvc.perform(post("/grupos/{id}/delete", g.getId())).andExpect(status().isOk())
+		this.mvc.perform(post("/grupos/{id}/delete", grupo.getId())).andExpect(status().isOk())
 				.andExpect(model().attributeExists("success"))
 				.andExpect(model().attribute("success", getDeleteSuccessMessage("grupo")));
 	}
 
 	@Test
-	@Order(8)
-	void testSaveEmptyName() throws Exception {
-		this.mvc.perform(post("/grupos").param("nome", "")).andExpect(status().isOk())
-				.andExpect(model().attributeExists("error"))
-				.andExpect(model().attribute("error", getBlankFieldMessage("nome")));
-	}
-
-	@Test
-	@Order(9)
-	void testUpdateEmptyName() throws Exception {
-		Grupo g = grupos.get(grupos.size() - 1);
-		assertNotNull(g);
-		this.mvc.perform(post("/grupos/{id}/update", g.getId()).param("nome", "")).andExpect(status().isOk())
-				.andExpect(model().attributeExists("error"))
-				.andExpect(model().attribute("error", getBlankFieldMessage("nome or id")));
-	}
-
-	@Test
 	@Order(10)
-	void testEditInvalidId() throws Exception {
-		this.mvc.perform(get("/grupos/{id}/edit", -1)).andExpect(status().isOk())
-				.andExpect(model().attributeExists("error"));
-
+	void testUpdateEmptyName() throws Exception {
+		this.mvc.perform(post("/grupos/{id}/update", grupo.getId())
+			.param("nome", "1"))
+			.andExpect(status().isOk())
+			.andExpect(model().attributeHasFieldErrors("grupo", "nome"));
+			
 	}
 
 	@Test
 	@Order(11)
+	void testEditInvalidId() throws Exception {
+		this.mvc.perform(get("/grupos/{id}/edit", -1))
+			.andExpect(status().isOk())
+			.andExpect(model().attributeExists("error"));
+
+	}
+
+	@Test
+	@Order(12)
 	void testDeleteInvalidId() throws Exception {
-		this.mvc.perform(post("/grupos/{id}/delete", -1)).andExpect(status().isOk())
-				.andExpect(model().attributeExists("error"));
+		this.mvc.perform(post("/grupos/{id}/delete", -1))
+			.andExpect(status().isOk())
+			.andExpect(model().attributeExists("error"));
 
 	}
 
