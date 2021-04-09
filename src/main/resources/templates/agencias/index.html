@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-br">
 
 <head th:insert="/fragments/head.html :: head">
-
+    <title>Listagem de Agências</title>
 </head>
 
 <body>
@@ -27,7 +27,9 @@
             <div class=" col-10">
                 <a th:href="@{/agencias/create}">
                     <button type="button" class="btn btn-secondary">
+
                         Adicionar Agências <i class="bi bi-plus"> </i>
+
                     </button>
                 </a>
 
@@ -35,7 +37,6 @@
         </div>
         <br />
         <div class="row">
-
             <div class="col-12">
                 <table id="table" class="table table-hover">
                     <thead>

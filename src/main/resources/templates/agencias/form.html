@@ -1,30 +1,212 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-br">
 
-<head th:replace="/fragments/head.html :: head"></head>
+<head th:replace="/fragments/head.html :: head">
+    <title>Agência</title>
+</head>
 
-<body>
+<body >
     <div class="container-fluid">
+        
         <nav th:replace="fragments/nav.html :: nav"></nav>
-        <form th:object="${agencia}" th:action="${url}" method="POST" id="form">
-            <div class="form-row">
-                <div class="form-group col-md-10">
-                    <label for="nome">Nome:</label>
-                    <input type="text" class="form-control" id="nome" name="nome"
-                        th:field="*{nome}" />
-                        <div class="invalid-feedback d-block" th:errors="*{nome}">
-						</div>
+      
+        <div id="spinner" class="justify-content-center">
+            <span class="visually-hidden">Consultando CNPJ....</span>
+            <div class="spinner-border" role="status">
+              
+            </div>
+        </div>
+        
+            
+        <form class="row g-3 needs-validation" novalidate th:object="${agencia}" th:action="${url}" method="POST" id="form">
+            
+                <div class="col-md-2">
+                    <label for="cnpj" class="form-label">CNPJ</label>
+                    <input
+                        type="text"
+                        class="form-control" 
+                        id="cnpj"  
+                        maxlength="18" 
+                        required 
+                        onblur="getNameByCnpj(event)" 
+                        th:field="*{cnpj}" >
+                    <div id="cep-div" class="invalid-feedback d-block" th:errors="*{cnpj}">
+                        
+                    </div>
+                </div>
+                <div class="col-md-10">
+                    <label for="nome" class="form-label">Nome</label>
+                    <input 
+                    type="text" 
+                    class="form-control" 
+                    id="nome" 
+                    required
+                    th:field = "*{nome}" >
+                    
+                    <div class="invalid-feedback d-block" th:errors="*{nome}">
+                        
+                    </div>
+                </div>
+            
+                <div class="col-md-4">
+                    <label for="municipio" class="form-label">Municipio</label>
+                    <input 
+                    type="text" 
+                    class="form-control" 
+                    name="municipio" 
+                    id="municipio" 
+                    maxlength="30" 
+                    required
+                    th:field = "*{municipio}"  >
+                    <div class="invalid-feedback d-block" th:errors="*{municipio}">
+                      
+                    </div>
                 </div>
 
-            </div>
-            <button type="submit" name="button" class="btn btn-primary">[[${buttonName}]]</button>
+                <div class="col-md-4">
+                    <label for="bairro" class="form-label">Bairro</label>
+                    <input 
+                        type="text" 
+                        class="form-control" 
+                        id="bairro" 
+                        required
+                        th:field = "*{bairro}"
+                    >
+                    <div class="invalid-feedback d-block" th:errors="*{bairro}">
 
+                    </div>
+                        
+                    
+                </div>
 
-        </form>
+                <div class="col-md-4">
+                    <label for="cep" class="form-label">CEP</label>
+                    <input 
+                    type="text" 
+                    class="form-control" 
+                    id="cep" 
+                    maxlength="9" 
+                    required
+                    th:field="*{cep}"
+                    >
+                    <div class="invalid-feedback d-block" th:errors="*{cep}" >
+                        
+                    </div>
+                </div>
+            
+                <div class="col-md-8">
+                    <label for="logradouro" class="form-label">Logradouro</label>
+                    <input 
+                    type="text" 
+                    class="form-control" 
+                    id="logradouro" 
+                    aria-describedby="inputGroupPrepend" 
+                    required
+                    th:field= "*{logradouro}"
+                    >
+                    <div class="invalid-feedback d-block" th:errors= "*{logradouro}">
+                        
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <label for="numero" class="form-label">Numero</label>
+                    <input 
+                    type="text" 
+                    class="form-control" 
+                    id="numero" 
+                    th:field = "*{numero}"
+                    >
+                    <div class="invalid-feedback d-block" th:errors="*{numero}">
+                     
+                    </div>
+                </div>
 
-
-
+                <div class="col-md-2">
+                    <label for="uf" class="form-label">UF</label>
+                    <input 
+                    type="text" 
+                    class="form-control" 
+                    id="uf" 
+                    maxlength="2" 
+                    required
+                    th:field = "*{uf}"
+                    >
+                    <div class="invalid-feedback d-block" th:errors="*{uf}">
+                        
+                    </div>
+                </div>
+            
+                <div class="col-md-10">
+                    <button type="submit" name="button" class="btn btn-primary">[[${buttonName}]] </button>
+                </div>
+            
+            </form>
     </div>
-</body>
+    <script type="text/javascript">
+     $(document).ready(function(){
+        //$("#cnpj").mask("00.000.000/0000-00"); 
+        //$("#cep").mask("00000-000");
+        $("#spinner").addClass("d-none");
+     });
+      function getNameByCnpj(event){
+        let cnpj  = $("#cnpj").val()
+        event.preventDefault();
+        cnpj = cnpj.replace(/[^0-9]/g,'').trim()
+        if(cnpj.length < 14) {
+            $("#cnpj").prop("disabled");
+            return false
+        }
+        $("form").hide();
+        $("#spinner").removeClass("d-none");
+        $("#spinner").addClass("d-flex");
+        setTimeout(async ()=>{
 
-</html>
+            let api = `https://www.receitaws.com.br/v1/cnpj/${cnpj}`;
+            let configs = {
+                crossDomain : true,
+                type: 'GET',
+                crossDomain: true, 
+                dataType: 'jsonp',
+                url:api
+
+                
+            }
+            try{
+                let response = await $.ajax(configs);
+                if(response.status === "ERROR"){
+                    alert("CNPJ inválido");
+                    $("#cnpj").val("").focus();
+
+                    
+                }
+                else{
+                    $("#nome").val(response.nome);
+                    $("#bairro").val(response.bairro)
+                    $("#cep").val(response.cep.replace(/[^0-9]/g,'').trim())
+                    $("#uf").val(response.uf)
+                    $("#logradouro").val(response.logradouro)
+                    $("#numero").val(response.numero)
+                    $("#municipio").val(response.municipio)
+                    $("form").addClass('was-validated');   
+                }
+            }catch(error){
+                $("#cep-div").html(error);
+                
+            }
+            $("form").show();
+            $("#spinner").addClass("d-none");
+            $("#spinner").removeClass("d-flex");
+
+        },1000);
+        
+        
+         
+         
+     }
+     
+     </script>
+    
+  </body>
+  </html>
+  
+
