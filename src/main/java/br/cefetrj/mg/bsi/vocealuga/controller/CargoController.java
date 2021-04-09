@@ -3,16 +3,22 @@ package br.cefetrj.mg.bsi.vocealuga.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import br.cefetrj.mg.bsi.vocealuga.exception.InvalidIdException;
 import br.cefetrj.mg.bsi.vocealuga.model.Cargo;
 import br.cefetrj.mg.bsi.vocealuga.repository.CargoRepository;
 
 import static br.cefetrj.mg.bsi.vocealuga.utils.MessageUtils.*;
+
+import java.util.Optional;
+
+import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/cargos")
@@ -39,31 +45,33 @@ public class CargoController {
     }
 
     @PostMapping
-    public String store(@ModelAttribute Cargo cargo, Model model) {
-        try {
-            this.repository.save(cargo);
-            model.addAttribute("success", getSaveSuccessMessage("cargo"));
-
-            return index(model);
-        } catch (Exception e) {
-            model.addAttribute("error", e.getMessage());
-
-            return this.create(model);
+    public String store(@Valid @ModelAttribute("cargo") Cargo cargo, Errors errors, Model model) {
+        if(errors.hasErrors()){
+            model.addAttribute("method", "POST");
+            model.addAttribute("buttonName", "Cadastrar");
+            model.addAttribute("url", "/cargos/");
+            return "cargos/form";
         }
+
+        this.repository.save(cargo);
+        model.addAttribute("success", getSaveSuccessMessage("cargo"));
+        return index(model);
+        
 
     }
 
     @GetMapping("/{id}/edit")
     public String edit(@PathVariable("id") int id, Model model) {
         try {
-            model.addAttribute("cargo", this.repository.findById(id));
+            Optional<Cargo> opt = this.repository.findById(id);
+            if(opt.isEmpty())
+                throw new InvalidIdException(id);;
+            model.addAttribute("cargo", opt.get());
             model.addAttribute("method", "POST");
             model.addAttribute("buttonName", "Atualizar");
             model.addAttribute("url", "/cargos/" + id + "/update");
-
             return "cargos/form";
-        } catch (Exception e) {
-
+        } catch (InvalidIdException e) {
             model.addAttribute("error", e.getMessage());
             return index(model);
         }
@@ -71,28 +79,31 @@ public class CargoController {
     }
 
     @PostMapping("/{id}/update")
-    public String update(@PathVariable("id") int id, @ModelAttribute Cargo cargo, Model model) {
-        try {
-            this.repository.save(cargo);
-            model.addAttribute("success", getUpdateSuccessMessage("cargo"));
-
-            return index(model);
-        } catch (Exception e) {
-
-            model.addAttribute("error", e.getMessage());
-
-            return edit(id, model);
-
+    public String update(@PathVariable("id") int id,@Valid @ModelAttribute("cargo")Cargo cargo,Errors errors,  Model model) {
+        
+        if(errors.hasErrors()){
+            model.addAttribute("cargo", cargo);
+            model.addAttribute("method", "POST");
+            model.addAttribute("buttonName", "Atualizar");
+            model.addAttribute("url", "/cargos/" + id + "/update");
+            return "cargos/form";
         }
+        this.repository.save(cargo);
+        model.addAttribute("success", getUpdateSuccessMessage("cargo"));
+        return index(model);
+        
 
     }
 
     @PostMapping("/{id}/delete")
     public String delete(@PathVariable("id") int id, Model model) {
         try {
-            this.repository.deleteById(id);
+            Optional<Cargo> opt = this.repository.findById(id);
+            if(opt.isEmpty())
+                throw new InvalidIdException(id);
+            this.repository.delete(opt.get());
             model.addAttribute("success", getDeleteSuccessMessage("cargo"));
-        } catch (Exception e) {
+        } catch (InvalidIdException e) {
             model.addAttribute("error", e.getMessage());
         }
         return index(model);
