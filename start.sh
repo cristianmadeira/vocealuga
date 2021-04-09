@@ -1,4 +1,8 @@
 #!/bin/bash
+
+cd src/main/resources/
+cp -a example.application.properties application.properties
+cd /app/
 echo 'Updating source list ...'
 apt update -y 
 apt install dos2unix
