@@ -15,34 +15,36 @@ public class Agencia{
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Integer id;
 
+	@Column(length = 100)
     @NotBlank
-    @Size(min = 5,max = 50)
+    @Size(min = 5,max = 100, message = "O nome deve ter entre {min} e {max} caracteres.")
     private String nome;
     
-    @Column(length = 14)
+	@Column(length = 14)
+    @Size(min=14, max = 14, message = "o CNPJ deve conter {max} caracteres.")
     @NotBlank
     private String cnpj;
     
     @Column(length = 8)
     @NotBlank
+	@Size(min = 8, max = 8, message = "O CEP deve conter {max} caracteres.")
     private String cep;
     
-    @NotBlank
+	@Column(length = 150)
+    @NotBlank(message = "O logradouro não pode ser em branco")
     private String logradouro;
     
     @Column
     private String numero;
     
-    @NotBlank
+    @NotBlank(message = "O bairro não pode ser em branco")
     private String bairro;
 
-    
-    
-    @NotBlank
+    @NotBlank(message = "O município não pode ser em branco")
     private String municipio;
     
     @Column(length=2)
-    @NotBlank
+    @NotBlank(message = "A UF não pode ser em branco")
     private String uf;
 
 	public Integer getId() {
