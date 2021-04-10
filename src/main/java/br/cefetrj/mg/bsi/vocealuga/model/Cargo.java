@@ -63,7 +63,7 @@ public class Cargo {
     public LocalDateTime getDeletedAt() {
         return deletedAt;
     }
-    public void setDeleteAt(LocalDateTime deletedAt) {
+    public void setDeletedAt(LocalDateTime deletedAt) {
         this.deletedAt = deletedAt;
     }
 
