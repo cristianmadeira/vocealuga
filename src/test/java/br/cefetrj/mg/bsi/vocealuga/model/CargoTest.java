@@ -5,10 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import uk.co.jemos.podam.api.PodamFactory;
 import uk.co.jemos.podam.api.PodamFactoryImpl;
 
@@ -23,7 +23,7 @@ public class CargoTest {
     public static void setUp(){
         factory = new PodamFactoryImpl();
         cargo = factory.manufacturePojo(Cargo.class);
-        cargo.setDeleteAt(LocalDateTime.now());
+        cargo.setDeletedAt(LocalDateTime.now());
     }
     @Test
     public void testCreatedAt(){
