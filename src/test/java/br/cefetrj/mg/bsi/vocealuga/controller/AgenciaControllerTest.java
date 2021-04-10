@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.UUID;
 
+import static org.hamcrest.Matchers.hasProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
@@ -57,7 +58,7 @@ class AgenciaControllerTest {
     }
 
     @BeforeEach
-    void testCargoController() {
+    void testAgenciaController() {
         agencia = this.create();
         agencia = this.repository.save(this.agencia);
         
@@ -76,24 +77,28 @@ class AgenciaControllerTest {
     @Order(3)
     void testStore() throws Exception {
         this.mvc.perform(post("/agencias")
-            .param("cnpj", "11111111111111")
+            .param("cnpj", getFakerCnpj())
             .param("nome", "Teste nome mock")
-            .param("cep", "Teste nome mock")
+            .param("cep", "12345678")
             .param("logradouro", "Teste nome mock")
             .param("numero", "Teste nome mock")
             .param("bairro", "Teste nome mock")
             .param("municipio", "Teste nome mock")
-            .param("uf", "Teste nome mock")
+            .param("uf", "RJ")
             ).andExpect(status().isOk())
             .andExpect(model().attributeExists("success"))
-            .andExpect(model().attribute("success", getSaveSuccessMessage("agencia")));
+            .andExpect(model().attribute("success", getSaveSuccessMessage("agência")))
+            .andExpect(model().attribute("agencia", hasProperty("createdAt")));
+            
     }
 
     @Test
     @Order(4)
     void testIndex() throws Exception {
-        this.mvc.perform(get("/agencias")).andExpect(status().isOk()).andExpect(model().attributeExists("agencias"))
-                .andExpect(model().attributeDoesNotExist("error"));
+        this.mvc.perform(get("/agencias"))
+            .andExpect(status().isOk())
+            .andExpect(model().attributeExists("agencias"))
+            .andExpect(model().attributeDoesNotExist("error"));
 
 
 
@@ -102,8 +107,9 @@ class AgenciaControllerTest {
     @Test
     @Order(5)
     void testEdit() throws Exception {
-        this.mvc.perform(get("/agencias/{id}/edit", agencia.getId())).andExpect(status().isOk())
-                .andExpect(view().name("agencias/form"));
+        this.mvc.perform(get("/agencias/{id}/edit", agencia.getId()))
+            .andExpect(status().isOk())
+            .andExpect(view().name("agencias/form"));
 
     }
 
@@ -112,25 +118,26 @@ class AgenciaControllerTest {
     void testUpdate() throws Exception {
         this.mvc.perform(
             post("/agencias/{id}/update", agencia.getId())
-            .param("cnpj", "00000000000000")
+            .param("cnpj", getFakerCnpj())
             .param("nome", "Teste nome mock Update")
-            .param("cep", "Teste nome mock")
+            .param("cep", "87654321")
             .param("logradouro", "Teste nome mock")
             .param("numero", "Teste nome mock")
             .param("bairro", "Teste nome mock")
             .param("municipio", "Teste nome mock")
-            .param("uf", "Teste nome mock"))
+            .param("uf", "ES"))
             .andExpect(status().isOk())
             .andExpect(model().attributeExists("success"))
-            .andExpect(model().attribute("success", getUpdateSuccessMessage("agencia")));
+            .andExpect(model().attribute("success", getUpdateSuccessMessage("agência")));
     }
 
     @Test
     @Order(7)
     void testDelete() throws Exception {
-        this.mvc.perform(post("/agencias/{id}/delete", agencia.getId())).andExpect(status().isOk())
-                .andExpect(model().attributeExists("success"))
-                .andExpect(model().attribute("success", getDeleteSuccessMessage("agencia")));
+        this.mvc.perform(post("/agencias/{id}/delete", agencia.getId()))
+            .andExpect(status().isOk())
+            .andExpect(model().attributeExists("success"))
+            .andExpect(model().attribute("success", getDeleteSuccessMessage("agência")));
     }
 
     @Test
@@ -155,16 +162,18 @@ class AgenciaControllerTest {
     @Test
     @Order(10)
     void testEditInvalidId() throws Exception {
-        this.mvc.perform(get("/agencias/{id}/edit", -1)).andExpect(status().isOk())
-                .andExpect(model().attributeExists("error"));
+        this.mvc.perform(get("/agencias/{id}/edit", -1))
+            .andExpect(status().isOk())
+            .andExpect(model().attributeExists("error"));
 
     }
 
     @Test
     @Order(11)
     void testDeleteInvalidId() throws Exception {
-        this.mvc.perform(post("/agencias/{id}/delete", -1)).andExpect(status().isOk())
-                .andExpect(model().attributeExists("error"));
+        this.mvc.perform(post("/agencias/{id}/delete", -1))
+            .andExpect(status().isOk())
+            .andExpect(model().attributeExists("error"));
 
     }
 
