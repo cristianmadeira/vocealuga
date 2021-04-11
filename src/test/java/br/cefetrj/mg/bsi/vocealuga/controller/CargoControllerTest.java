@@ -3,14 +3,15 @@ package br.cefetrj.mg.bsi.vocealuga.controller;
 import static br.cefetrj.mg.bsi.vocealuga.utils.MessageUtils.getDeleteSuccessMessage;
 import static br.cefetrj.mg.bsi.vocealuga.utils.MessageUtils.getSaveSuccessMessage;
 import static br.cefetrj.mg.bsi.vocealuga.utils.MessageUtils.getUpdateSuccessMessage;
-import static org.junit.Assert.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-import org.junit.jupiter.api.BeforeEach;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -20,31 +21,60 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
+import br.cefetrj.mg.bsi.vocealuga.model.Agencia;
 import br.cefetrj.mg.bsi.vocealuga.model.Cargo;
+import br.cefetrj.mg.bsi.vocealuga.model.Funcionario;
+import br.cefetrj.mg.bsi.vocealuga.repository.AgenciaRepository;
 import br.cefetrj.mg.bsi.vocealuga.repository.CargoRepository;
+import br.cefetrj.mg.bsi.vocealuga.repository.FuncionarioRepository;
+import uk.co.jemos.podam.api.PodamFactoryImpl;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestMethodOrder(OrderAnnotation.class)
 class CargoControllerTest {
 
-    @Autowired
     private MockMvc mvc;
-    
     private Cargo cargo;
-    
-    @Autowired
     private CargoRepository repository;
-    
+    private AgenciaRepository agenciaRepository;
+    private FuncionarioRepository funcionarioRepository;
 
-    @BeforeEach
-    void testCargoController() {
-        cargo = new Cargo();
-        cargo.setNome("Cargo Válido");
-        this.cargo = this.repository.save(this.cargo);
-        assertNotNull(this.cargo);
+    @Autowired
+    public CargoControllerTest(CargoRepository repository, MockMvc mvc, AgenciaRepository agenciaRepository, FuncionarioRepository funcionarioRepository){
+        this.mvc = mvc;
+        this.repository = repository;
+        this.agenciaRepository = agenciaRepository;
+        this.funcionarioRepository= funcionarioRepository;
+        this.cargo = new Cargo();
+        this.cargo.setNome("Cargo Válido");
+        this.cargo = this.repository.save(cargo);
     }
 
+    private Cargo attachFuncionario(){
+        Agencia a = new Agencia();
+        Funcionario f = new Funcionario();
+        
+        a = new PodamFactoryImpl().manufacturePojo(Agencia.class);
+        f = new PodamFactoryImpl().manufacturePojo(Funcionario.class);
+        
+        a.setDeletedAt(null);
+        a = agenciaRepository.save(a);
+        
+        f.setEmail("fakeremail@gmail.com");
+        f.setCargo(cargo);
+        f.setAgencia(a);
+        f.setDeletedAt(null);
+        f = this.funcionarioRepository.save(f);
+        
+        List<Funcionario> funcionarios = new ArrayList<>();
+        funcionarios.add(f);
+        cargo.setFuncionarios(funcionarios);
+        
+        return cargo;
+
+    }
+    
     @Test
     @Order(2)
     void testCreate() throws Exception {
@@ -131,6 +161,15 @@ class CargoControllerTest {
         this.mvc.perform(post("/cargos/{id}/delete", -1)).andExpect(status().isOk())
                 .andExpect(model().attributeExists("error"));
 
+    }
+    @Test
+    @Order(12)
+    void testDeleteCargoWithEmployee() throws Exception{
+        Cargo cargo = this.attachFuncionario();
+        this.mvc
+            .perform(post("/cargos/{id}/delete",cargo.getId()))
+            .andExpect(status().isOk())
+            .andExpect(model().attributeExists("error"));
     }
 
 }
