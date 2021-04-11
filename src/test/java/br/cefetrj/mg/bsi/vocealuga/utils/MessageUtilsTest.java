@@ -130,4 +130,13 @@ class MessageUtilsTest {
 		String actual = MessageUtils.getResultNotFoundMessage(result);
 		assertEquals(expected, actual);
 	}
+	@Test
+	public void testGetDeleteExceptionMessage(){
+		String entityName = "cargo";
+		int size = 1;
+		String toEntityName = "funcionário";
+		String expected = "Você não pode excluir este(a)(s) cargo, pois encontra(m)-se 1 funcionário(s) .";
+		String actual = MessageUtils.getDeleteExceptionMessage(entityName, size, toEntityName);
+		assertEquals(expected, actual);
+	}
 }
