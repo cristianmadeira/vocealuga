@@ -11,8 +11,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.Where;
-
-
+import java.util.List;
+import javax.persistence.OneToMany;
 @Entity
 @SQLDelete(sql = "UPDATE agencia SET deleted_at = current_timestamp()  WHERE id = ? ")
 @Where(clause = "deleted_at is null")
@@ -53,6 +53,9 @@ public class Agencia{
     @Size(min = 2, max = 2, message = "A UF conter {max} caracteres.")
     private String uf;
 
+	@OneToMany(mappedBy ="agencia")
+	private List<Veiculo> veiculos;
+	
 	@Column(updatable = false)
 	@CreationTimestamp
 	private LocalDateTime createdAt;
