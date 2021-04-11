@@ -34,6 +34,7 @@ public class MessageUtils {
 			message = message.concat(format(": %s", details[0]));
 		return format(MessageEnums.ERROR, "inserir", message);
 	}
+	
 
 	public static String getUpdateErrorMessage(String str, String... details) {
 		String message = str;
@@ -49,6 +50,9 @@ public class MessageUtils {
 		return format(MessageEnums.ERROR, "excluir", message);
 	}
 
+	public static String getDeleteExceptionMessage(String entityName, int size, String details){
+		return format(MessageEnums.DELETE_EXCEPTION,entityName,size,details);
+	}
 	public static String getBlankFieldMessage(String fieldName) {
 		return format(MessageEnums.BLANK_FIELD, fieldName);
 	}
