@@ -21,14 +21,11 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<dependencies>
-		<!-- https://mvnrepository.com/artifact/uk.co.jemos.podam/podam -->
 		<dependency>
-			<groupId>uk.co.jemos.podam</groupId>
-			<artifactId>podam</artifactId>
-			<version>7.2.6.RELEASE</version>
-			<scope>test</scope>
+			<groupId>com.github.javafaker</groupId>
+			<artifactId>javafaker</artifactId>
+			<version>1.0.2</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>
@@ -114,6 +111,14 @@
 						</goals>
 					</execution>
 				</executions>
+				<configuration>
+                    <excludes>
+                        <!-- Exclude full package from test coverage -->
+                        <exclude>**/*br/cefetrj/mg/bsi/vocealuga/faker/**</exclude>
+						<exclude>**/*br/cefetrj/mg/bsi/vocealuga/Main.class**</exclude>
+						<exclude>**/*br/cefetrj/mg/bsi/vocealuga/controller/IndexController.class**</exclude>
+                    </excludes>
+                </configuration>
 			</plugin>
 		</plugins>
 	</build>
