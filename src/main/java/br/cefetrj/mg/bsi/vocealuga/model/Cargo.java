@@ -3,6 +3,7 @@ package br.cefetrj.mg.bsi.vocealuga.model;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -32,7 +33,7 @@ public class Cargo {
     private String nome;
 
 
-    @OneToMany(mappedBy = "cargo")
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "cargo")
     private List<Funcionario> funcionarios;
 
     @Column(updatable = false)

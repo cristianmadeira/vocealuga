@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -21,13 +22,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
+import br.cefetrj.mg.bsi.vocealuga.faker.AgenciaFaker;
+import br.cefetrj.mg.bsi.vocealuga.faker.CargoFaker;
+import br.cefetrj.mg.bsi.vocealuga.faker.FuncionarioFaker;
 import br.cefetrj.mg.bsi.vocealuga.model.Agencia;
 import br.cefetrj.mg.bsi.vocealuga.model.Cargo;
 import br.cefetrj.mg.bsi.vocealuga.model.Funcionario;
-import br.cefetrj.mg.bsi.vocealuga.repository.AgenciaRepository;
 import br.cefetrj.mg.bsi.vocealuga.repository.CargoRepository;
-import br.cefetrj.mg.bsi.vocealuga.repository.FuncionarioRepository;
-import uk.co.jemos.podam.api.PodamFactoryImpl;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -35,46 +36,44 @@ import uk.co.jemos.podam.api.PodamFactoryImpl;
 class CargoControllerTest {
 
     private MockMvc mvc;
-    private Cargo cargo;
+    private Cargo cargo, cargoWithEmployee;
     private CargoRepository repository;
-    private AgenciaRepository agenciaRepository;
-    private FuncionarioRepository funcionarioRepository;
+    
+    
 
     @Autowired
-    public CargoControllerTest(CargoRepository repository, MockMvc mvc, AgenciaRepository agenciaRepository, FuncionarioRepository funcionarioRepository){
-        this.mvc = mvc;
+    public CargoControllerTest(CargoRepository repository, MockMvc mvc ){
         this.repository = repository;
-        this.agenciaRepository = agenciaRepository;
-        this.funcionarioRepository= funcionarioRepository;
-        this.cargo = new Cargo();
-        this.cargo.setNome("Cargo Válido");
-        this.cargo = this.repository.save(cargo);
+        this.mvc = mvc;
+        
+        
     }
 
-    private Cargo attachFuncionario(){
-        Agencia a = new Agencia();
-        Funcionario f = new Funcionario();
+    @BeforeEach
+    public void setUp(){
+        cargo =  this.repository.save(createCargo());
         
-        a = new PodamFactoryImpl().manufacturePojo(Agencia.class);
-        f = new PodamFactoryImpl().manufacturePojo(Funcionario.class);
-        
-        a.setDeletedAt(null);
-        a = agenciaRepository.save(a);
-        
-        f.setEmail("fakeremail@gmail.com");
-        f.setCargo(cargo);
-        f.setAgencia(a);
-        f.setDeletedAt(null);
-        f = this.funcionarioRepository.save(f);
+        cargoWithEmployee = createCargo();
         
         List<Funcionario> funcionarios = new ArrayList<>();
-        funcionarios.add(f);
-        cargo.setFuncionarios(funcionarios);
+        Funcionario f1 = createFuncionario();
+        f1.setAgencia(createAgencia());
+        f1.setCargo(cargoWithEmployee);
+        funcionarios.add(f1);
         
-        return cargo;
-
+        cargoWithEmployee.setFuncionarios(funcionarios);
+        cargoWithEmployee  = this.repository.save(cargoWithEmployee);
+    }
+    private Cargo createCargo(){
+        return new CargoFaker().getObjectFaker();
     }
     
+    private Funcionario createFuncionario(){
+        return new FuncionarioFaker().getObjectFaker();
+    }
+    private Agencia createAgencia(){
+        return new AgenciaFaker().getObjectFaker();
+    }
     @Test
     @Order(2)
     void testCreate() throws Exception {
@@ -165,9 +164,8 @@ class CargoControllerTest {
     @Test
     @Order(12)
     void testDeleteCargoWithEmployee() throws Exception{
-        Cargo cargo = this.attachFuncionario();
         this.mvc
-            .perform(post("/cargos/{id}/delete",cargo.getId()))
+            .perform(post("/cargos/{id}/delete",cargoWithEmployee.getId()))
             .andExpect(status().isOk())
             .andExpect(model().attributeExists("error"));
     }
