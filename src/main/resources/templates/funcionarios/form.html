@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="/fragments/head.html :: head"></head>
+
+<body>
+    <div class="container-fluid">
+        <nav th:replace="fragments/nav.html :: nav"></nav>
+        <form th:object="${funcionario}" th:action="${url}" method="POST" id="form">
+            <div class="form-row">
+                <div class="form-group col-md-8">
+                    <label for="nome" class="form-label">Nome:</label>
+                    <input type="text" class="form-control" id="nome"
+                        th:field="*{nome}" />
+                    <div class="invalid-feedback d-block" th:errors="*{nome}"></div>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="cpf" class="form-label">CPF:</label>
+                    <input type="text" class="form-control" id="cpf"
+                        th:field="*{cpf}" />
+                    <div class="invalid-feedback d-block" th:errors="*{cpf}"></div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <label class="form-label" id="email">E-mail</label>
+                    <input class="form-control" type="email" th:field="*{email}" />
+                    <div class="invalid-feedback d-block" th:errors="*{email}"></div>
+                </div>
+                
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label class="form-label" for="agencia">Agência</label>
+                    <select autocomplete="on" th:field="*{agencia}" class="form-control" id="agencia">
+                        <option  th:each="agencia : ${agencias}"
+                            name="agencia"
+                            th:value="${agencia.id}"
+                            th:text="${agencia.nome}">
+
+                        </option>
+                    </select>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="form-label" for="cargo">Cargo</label>
+                    <select autocomplete="on" th:field="*{cargo}" class="form-control" id="cargo">
+                        <option  th:each="cargo : ${cargos}"
+                            name="cargo"
+                            th:value="${cargo.id}"
+                            th:text="${cargo.nome}">
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-12">
+                    <button type="submit" name="button" class="btn btn-primary">[[${buttonName}]]</button>
+                </div>
+            </div>
+            
+        </form>
+
+
+
+    </div>
+</body>
+
+</html>

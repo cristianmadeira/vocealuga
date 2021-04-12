@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="pt-br">
+<html xmlns:th="http://www.thymeleaf.org">
 
 <head th:insert="/fragments/head.html :: head">
-    <title>Listagem de Agências</title>
+
 </head>
 
 <body>
@@ -25,11 +25,9 @@
         <br />
         <div class="row">
             <div class=" col-10">
-                <a th:href="@{/agencias/create}">
+                <a th:href="@{/funcionarios/create}">
                     <button type="button" class="btn btn-secondary">
-
-                        Adicionar Agências <i class="bi bi-plus"> </i>
-
+                        Adicionar Funcionário <i class="bi bi-plus"> </i>
                     </button>
                 </a>
 
@@ -37,6 +35,7 @@
         </div>
         <br />
         <div class="row">
+
             <div class="col-12">
                 <table id="table" class="table table-hover">
                     <thead>
@@ -47,18 +46,18 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each=" agencia : ${agencias}">
-                            <td th:text="${agencia.id}"></td>
-                            <td th:text="${agencia.nome}"></td>
+                        <tr th:each=" funcionario : ${funcionarios}">
+                            <td th:text="${funcionario.id}"></td>
+                            <td th:text="${funcionario.nome}"></td>
                             <td>
                                 <div class="row">
                                     <div class="col-2">
-                                        <a th:href="@{/agencias/{id}/edit(id = ${agencia.id} )}">
+                                        <a th:href="@{/funcionarios/{id}/edit(id = ${funcionario.id} )}">
                                             <button type="button" class="btn btn-primary">Editar</button>
                                         </a>
                                     </div>
                                     <div class="col-8">
-                                        <form method="POST" th:action="@{/agencias/{id}/delete(id = ${agencia.id})}">
+                                        <form method="POST" th:action="@{/funcionarios/{id}/delete(id = ${funcionario.id})}">
                                             <button type="submit" class="btn btn-danger">Excluir</button>
                                         </form>
                                     </div>
@@ -77,3 +76,4 @@
     </div>
 </body>
 
+</html>

@@ -18,58 +18,73 @@
         </div>
         
             
-        <form class="row g-3 needs-validation" novalidate th:object="${agencia}" th:action="${url}" method="POST" id="form">
+        <form   th:object="${agencia}" th:action="${url}" method="POST" id="form">
+            <div class="form-row">
+
             
-                <div class="col-md-2">
-                    <label for="cnpj" class="form-label">CNPJ</label>
+                <div class="form-group col-md-2">
+                    <label
+                        for="cnpj" 
+                        class="form-label"
+                        th:classappend="${#fields.hasErrors('cnpj')} ? text-danger" 
+                        >CNPJ</label>
                     <input
                         type="text"
                         class="form-control" 
+                        th:classappend="${#fields.hasErrors('cnpj')}? is-invalid "
                         id="cnpj"  
                         maxlength="18" 
-                        required 
+                         
                         onblur="getNameByCnpj(event)" 
                         th:field="*{cnpj}" >
                     <div id="cep-div" class="invalid-feedback d-block" th:errors="*{cnpj}">
                         
                     </div>
                 </div>
-                <div class="col-md-10">
-                    <label for="nome" class="form-label">Nome</label>
+                <div class="form-group col-md-10">
+                    <label for="nome" class="form-label"
+                    th:classappend="${#fields.hasErrors('nome')} ? text-danger" 
+                    >Nome</label>
                     <input 
                     type="text" 
                     class="form-control" 
                     id="nome" 
-                    required
+                    th:classappend="${#fields.hasErrors('nome')} ? is-invalid" 
                     th:field = "*{nome}" >
                     
                     <div class="invalid-feedback d-block" th:errors="*{nome}">
                         
                     </div>
                 </div>
-            
-                <div class="col-md-4">
-                    <label for="municipio" class="form-label">Municipio</label>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="municipio" class="form-label"
+                    th:classappend="${#fields.hasErrors('municipio')} ? text-danger" 
+                    
+                    >Municipio</label>
                     <input 
                     type="text" 
                     class="form-control" 
                     name="municipio" 
                     id="municipio" 
                     maxlength="30" 
-                    required
+                    th:classappend="${#fields.hasErrors('municipio')} ? is-invalid" 
                     th:field = "*{municipio}"  >
                     <div class="invalid-feedback d-block" th:errors="*{municipio}">
                       
                     </div>
                 </div>
 
-                <div class="col-md-4">
-                    <label for="bairro" class="form-label">Bairro</label>
+                <div class="form-group col-md-4">
+                    <label for="bairro" class="form-label"
+                    th:classappend="${#fields.hasErrors('bairro')} ? text-danger" 
+                    >Bairro</label>
                     <input 
                         type="text" 
                         class="form-control" 
                         id="bairro" 
-                        required
+                        th:classappend="${#fields.hasErrors('bairro')} ? is-invalid" 
                         th:field = "*{bairro}"
                     >
                     <div class="invalid-feedback d-block" th:errors="*{bairro}">
@@ -79,73 +94,85 @@
                     
                 </div>
 
-                <div class="col-md-4">
-                    <label for="cep" class="form-label">CEP</label>
+                <div class="form-group col-md-4">
+                    <label for="cep" class="form-label"
+                    th:classappend="${#fields.hasErrors('cep')} ? text-danger" 
+                    
+                    >CEP</label>
                     <input 
                     type="text" 
                     class="form-control" 
                     id="cep" 
                     maxlength="9" 
-                    required
+                    th:classappend="${#fields.hasErrors('cep')} ? is-invalid"
                     th:field="*{cep}"
                     >
                     <div class="invalid-feedback d-block" th:errors="*{cep}" >
                         
                     </div>
                 </div>
-            
-                <div class="col-md-8">
-                    <label for="logradouro" class="form-label">Logradouro</label>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-8">
+                    <label for="logradouro" class="form-label"
+                    th:classappend="${#fields.hasErrors('logradouro')} ? text-danger" 
+                    >Logradouro</label>
                     <input 
                     type="text" 
                     class="form-control" 
                     id="logradouro" 
                     aria-describedby="inputGroupPrepend" 
-                    required
+                    th:classappend="${#fields.hasErrors('logradouro')} ? is-invalid "
                     th:field= "*{logradouro}"
                     >
                     <div class="invalid-feedback d-block" th:errors= "*{logradouro}">
                         
                     </div>
                 </div>
-                <div class="col-md-2">
-                    <label for="numero" class="form-label">Numero</label>
+                <div class="form-group col-md-2">
+                    <label for="numero" class="form-label"
+                    th:classappend="${#fields.hasErrors('numero')} ? text-danger" 
+                    
+                    >Numero</label>
                     <input 
                     type="text" 
                     class="form-control" 
                     id="numero" 
                     th:field = "*{numero}"
+                    th:classappend="${#fields.hasErrors('numero')} ? is-invalid" 
                     >
                     <div class="invalid-feedback d-block" th:errors="*{numero}">
                      
                     </div>
                 </div>
 
-                <div class="col-md-2">
-                    <label for="uf" class="form-label">UF</label>
+                <div class="form-group col-md-2">
+                    <label for="uf" class="form-label"
+                    th:classappend="${#fields.hasErrors('uf')} ? text-danger : '' " 
+                    >UF</label>
                     <input 
                     type="text" 
                     class="form-control" 
                     id="uf" 
                     maxlength="2" 
-                    required
+                    th:classappend="${#fields.hasErrors('uf')} ? is-invalid" 
                     th:field = "*{uf}"
                     >
                     <div class="invalid-feedback d-block" th:errors="*{uf}">
                         
                     </div>
                 </div>
-            
-                <div class="col-md-10">
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-10">
                     <button type="submit" name="button" class="btn btn-primary">[[${buttonName}]] </button>
                 </div>
+            </div>
+        </form>
             
-            </form>
     </div>
     <script type="text/javascript">
      $(document).ready(function(){
-        //$("#cnpj").mask("00.000.000/0000-00"); 
-        //$("#cep").mask("00000-000");
         $("#spinner").addClass("d-none");
      });
       function getNameByCnpj(event){
@@ -154,6 +181,8 @@
         cnpj = cnpj.replace(/[^0-9]/g,'').trim()
         if(cnpj.length < 14) {
             $("#cnpj").prop("disabled");
+            alert("CNPJ inválido!");
+            $("#cnpj").val("");
             return false
         }
         $("form").hide();
@@ -183,11 +212,14 @@
                     $("#nome").val(response.nome);
                     $("#bairro").val(response.bairro)
                     $("#cep").val(response.cep.replace(/[^0-9]/g,'').trim())
+                    $("#cnpj").val(cnpj);
                     $("#uf").val(response.uf)
                     $("#logradouro").val(response.logradouro)
                     $("#numero").val(response.numero)
                     $("#municipio").val(response.municipio)
                     $("form").addClass('was-validated');   
+                    $('label').removeClass('text-danger');
+                    $(".invalid-feedback").html("");
                 }
             }catch(error){
                 $("#cep-div").html(error);
@@ -196,6 +228,7 @@
             $("form").show();
             $("#spinner").addClass("d-none");
             $("#spinner").removeClass("d-flex");
+
 
         },1000);
         
