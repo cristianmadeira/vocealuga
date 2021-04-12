@@ -2,6 +2,7 @@ package br.cefetrj.mg.bsi.vocealuga.model;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -41,12 +42,12 @@ public class Funcionario {
     @NotBlank(message = "O Email não pode ser em branco.")
     private String email;
     
-    @ManyToOne
-    @JoinColumn(nullable = false, name = "agencia_id")
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn()
     private Agencia agencia;
 
-    @ManyToOne
-    @JoinColumn(nullable = false, name = "cargo_id")
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn()
     private Cargo cargo;
 
     @Column(updatable = false, nullable = false)

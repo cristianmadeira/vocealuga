@@ -7,12 +7,11 @@ import static org.hamcrest.Matchers.hasProperty;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-import java.util.ArrayList;
 import java.util.UUID;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -21,15 +20,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import br.cefetrj.mg.bsi.vocealuga.faker.AgenciaFaker;
+import br.cefetrj.mg.bsi.vocealuga.faker.CargoFaker;
+import br.cefetrj.mg.bsi.vocealuga.faker.FuncionarioFaker;
 import br.cefetrj.mg.bsi.vocealuga.model.Agencia;
 import br.cefetrj.mg.bsi.vocealuga.model.Cargo;
 import br.cefetrj.mg.bsi.vocealuga.model.Funcionario;
-import br.cefetrj.mg.bsi.vocealuga.repository.AgenciaRepository;
-import br.cefetrj.mg.bsi.vocealuga.repository.CargoRepository;
 import br.cefetrj.mg.bsi.vocealuga.repository.FuncionarioRepository;
-import uk.co.jemos.podam.api.PodamFactory;
-import uk.co.jemos.podam.api.PodamFactoryImpl;
 
 
 @SpringBootTest
@@ -37,43 +35,37 @@ import uk.co.jemos.podam.api.PodamFactoryImpl;
 @TestMethodOrder(OrderAnnotation.class)
 public class FuncionarioControllerTest {
     
-    @Autowired
-    private MockMvc mvc;
-
-    @Autowired
+    
+    private MockMvc mvc ;
     private FuncionarioRepository repository;
+    private static Funcionario funcionario;
+
     
+
     @Autowired
-    private CargoRepository cargoRepository;
-    
-    @Autowired
-    private AgenciaRepository agenciaRepository;
-    
-    private  Funcionario funcionario;
-
-    private PodamFactory factory;
-
-    @BeforeEach
-    public void setUp(){
-        factory = new PodamFactoryImpl();
-        funcionario = factory.manufacturePojo(Funcionario.class);
-        Cargo cargo = funcionario.getCargo();
-        Agencia agencia = funcionario.getAgencia();
-        
-        cargo.setFuncionarios(new ArrayList<>());
-        cargo.setDeletedAt(null);
-        cargo = cargoRepository.save(cargo);
-        agencia.setDeletedAt(null);
-        agencia = agenciaRepository.save(agencia);
-        
-        funcionario.setCargo(cargo);
-        funcionario.setAgencia(agencia);
-        funcionario.setEmail("fakeremail@gmail.com");
-        funcionario.setDeletedAt(null);
-        funcionario = repository.save(funcionario);
-
+    public FuncionarioControllerTest(FuncionarioRepository repository, MockMvc mvc){
+        this.repository = repository;
+        this.mvc = mvc;
+        funcionario = createFuncionario();
+        funcionario = saveFuncionario(funcionario);
     }
 
+    private  Funcionario createFuncionario(){
+        FuncionarioFaker faker = new FuncionarioFaker();
+        Funcionario f = faker.getObjectFaker();
+        f.setAgencia(createAgencia());
+        f.setCargo(createCargo());
+        return f;
+    }
+    private Funcionario saveFuncionario(Funcionario f){
+        return repository.save(f);
+    }
+    private Cargo createCargo(){
+        return new CargoFaker().getObjectFaker();
+    }
+    private Agencia createAgencia(){
+        return new AgenciaFaker().getObjectFaker();
+    }
     @Test
     @Order(1)
     public void testIndex() throws Exception{
@@ -84,9 +76,10 @@ public class FuncionarioControllerTest {
     @Test
     @Order(2)
     public void testStoreWithValidEmployee() throws Exception {
-        Funcionario f = funcionario;
-        f.setNome("Novo Funcionário");
-        f.setCpf(UUID.randomUUID().toString().substring(0,11));
+        Funcionario f = createFuncionario();
+        f.setAgencia(funcionario.getAgencia());
+        f.setCargo(funcionario.getCargo());
+        
         this.mvc.
             perform(post("/funcionarios")
             .param("nome",f.getNome())
@@ -101,8 +94,8 @@ public class FuncionarioControllerTest {
     @Order(3)
     public void testStoreWithInvalidEmployee() throws Exception{
         this.mvc
-        .perform(post("/funcionarios").param("nome",""))
-        .andExpect(model().attributeHasFieldErrors("funcionario","nome"));
+        .perform(post("/funcionarios").param("email",""))
+        .andExpect(model().attributeHasFieldErrors("funcionario","email"));
     }
 
     @Test
