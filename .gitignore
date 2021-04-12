@@ -32,3 +32,4 @@ target/
 .settings/
 .vscode/
 src/main/resources/application.properties
+.mvn/
