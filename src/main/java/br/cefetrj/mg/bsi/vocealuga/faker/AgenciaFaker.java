@@ -11,17 +11,17 @@ public class AgenciaFaker extends BaseFaker<Agencia>{
 
     
     @Override
-    public List<Agencia> generate(int amount) {
+    public List<Agencia> create(int amount) {
         List<Agencia> agencias = new ArrayList<Agencia>();
         for(int i =0; i< amount; i++){
-            agencias.add(getObjectFaker());
+            agencias.add(create());
         }
         return agencias;
         
     }
 
     @Override
-    public Agencia getObjectFaker() {
+    public Agencia create() {
         Agencia a = new Agencia();
         a.setNome(faker.name().name());
         a.setBairro(customFaker(20));

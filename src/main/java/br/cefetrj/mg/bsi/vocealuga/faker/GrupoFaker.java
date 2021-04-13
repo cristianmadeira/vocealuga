@@ -10,7 +10,7 @@ import br.cefetrj.mg.bsi.vocealuga.model.Grupo;
 public class GrupoFaker extends BaseFaker<Grupo> {
 
     @Override
-    public Grupo getObjectFaker() {
+    public Grupo create() {
         Grupo g = new Grupo();
         g.setNome(faker.company().name());
         g.setCreatedAt(LocalDateTime.now());
@@ -18,10 +18,10 @@ public class GrupoFaker extends BaseFaker<Grupo> {
     }
 
     @Override
-    public List<Grupo> generate(int amount) {
+    public List<Grupo> create(int amount) {
         List<Grupo> grupos = new ArrayList<>();
         for(int i = 0 ; i < amount ; i++){
-            grupos.add(getObjectFaker());
+            grupos.add(create());
         }
         return grupos;
     }

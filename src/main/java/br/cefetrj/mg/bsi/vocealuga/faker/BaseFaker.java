@@ -8,7 +8,7 @@ import com.github.javafaker.Faker;
 
 public abstract class BaseFaker<E> {
     protected Faker faker = new Faker(new Locale("pt", "BR"));
-    public abstract E getObjectFaker();
-    public abstract List<E> generate(int amount);
+    public abstract E create();
+    public abstract List<E> create(int amount);
     public abstract String customFaker(int amount);
 }

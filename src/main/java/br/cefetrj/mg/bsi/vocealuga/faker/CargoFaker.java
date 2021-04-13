@@ -10,7 +10,7 @@ import br.cefetrj.mg.bsi.vocealuga.model.Cargo;
 public class CargoFaker extends BaseFaker<Cargo> {
 
     @Override
-    public Cargo getObjectFaker() {
+    public Cargo create() {
         Cargo c = new Cargo();
         c.setNome(faker.company().name());
         c.setCreatedAt(LocalDateTime.now());
@@ -18,10 +18,10 @@ public class CargoFaker extends BaseFaker<Cargo> {
     }
 
     @Override
-    public List<Cargo> generate(int amount) {
+    public List<Cargo> create(int amount) {
         List<Cargo> cargos = new ArrayList<>();
         for(int i = 0 ; i < amount ; i++){
-            cargos.add(getObjectFaker());
+            cargos.add(create());
         }
         return cargos;
     }

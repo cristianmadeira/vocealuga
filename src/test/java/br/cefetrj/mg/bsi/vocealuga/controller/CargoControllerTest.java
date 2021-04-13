@@ -65,14 +65,14 @@ class CargoControllerTest {
         cargoWithEmployee  = this.repository.save(cargoWithEmployee);
     }
     private Cargo createCargo(){
-        return new CargoFaker().getObjectFaker();
+        return new CargoFaker().create();
     }
     
     private Funcionario createFuncionario(){
-        return new FuncionarioFaker().getObjectFaker();
+        return new FuncionarioFaker().create();
     }
     private Agencia createAgencia(){
-        return new AgenciaFaker().getObjectFaker();
+        return new AgenciaFaker().create();
     }
     @Test
     @Order(2)

@@ -52,7 +52,7 @@ public class FuncionarioControllerTest {
 
     private  Funcionario createFuncionario(){
         FuncionarioFaker faker = new FuncionarioFaker();
-        Funcionario f = faker.getObjectFaker();
+        Funcionario f = faker.create();
         f.setAgencia(createAgencia());
         f.setCargo(createCargo());
         return f;
@@ -61,10 +61,10 @@ public class FuncionarioControllerTest {
         return repository.save(f);
     }
     private Cargo createCargo(){
-        return new CargoFaker().getObjectFaker();
+        return new CargoFaker().create();
     }
     private Agencia createAgencia(){
-        return new AgenciaFaker().getObjectFaker();
+        return new AgenciaFaker().create();
     }
     @Test
     @Order(1)

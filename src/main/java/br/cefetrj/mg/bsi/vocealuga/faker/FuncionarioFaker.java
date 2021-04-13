@@ -10,7 +10,7 @@ import br.cefetrj.mg.bsi.vocealuga.model.Funcionario;
 public class FuncionarioFaker extends BaseFaker<Funcionario> {
 
     @Override
-    public Funcionario getObjectFaker() {
+    public Funcionario create() {
         Funcionario f = new Funcionario();
         f.setCpf(customFaker(11));
         f.setEmail(faker.internet().emailAddress());
@@ -20,10 +20,10 @@ public class FuncionarioFaker extends BaseFaker<Funcionario> {
     }
 
     @Override
-    public List<Funcionario> generate(int amount) {
+    public List<Funcionario> create(int amount) {
         List<Funcionario> funcionarios = new ArrayList<>();
         for(int i = 0 ; i < amount ; i++){
-            funcionarios.add(getObjectFaker());
+            funcionarios.add(create());
         }
         return funcionarios;
     }

@@ -71,13 +71,13 @@ class AgenciaControllerTest {
         
     }
     private Agencia createAgencia(){
-        return new AgenciaFaker().getObjectFaker();
+        return new AgenciaFaker().create();
     }
     private Funcionario createFuncionario(){
-        return new FuncionarioFaker().getObjectFaker();
+        return new FuncionarioFaker().create();
     }
     private Cargo createCargo(){
-        return new CargoFaker().getObjectFaker();
+        return new CargoFaker().create();
     }
     
     
