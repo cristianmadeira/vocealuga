@@ -115,6 +115,7 @@
                     <excludes>
                         <!-- Exclude full package from test coverage -->
                         <exclude>**/*br/cefetrj/mg/bsi/vocealuga/faker/**</exclude>
+						<exclude>**/*br/cefetrj/mg/bsi/vocealuga/model/**</exclude>
 						<exclude>**/*br/cefetrj/mg/bsi/vocealuga/Main.class**</exclude>
 						<exclude>**/*br/cefetrj/mg/bsi/vocealuga/controller/IndexController.class**</exclude>
                     </excludes>
