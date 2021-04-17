@@ -14,16 +14,16 @@ public class Oficina {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     
-    @NotBlank
-    @Size(min = 5, max = 50)
+    @NotBlank(message = "O Nome não pode estar em branco.")
+    @Size(min = 5, max = 50, message = "O nome deve ter entre {min} e {max} caracteres.")
     private String nome;
     
-    @Email
-    @NotBlank
+    @Email(message = "O E-mail deve ser válido.")
+    @NotBlank(message = "O E-mail não pode ser em branco.")
     private String email;
 
-    @NotBlank
-    @Size(min = 10, max = 11)
+    @NotBlank(message = "O telefone não pode ser em branco.")
+    @Size(min = 10, max = 11, message = "O telefone deve ter entre {min} e {max} caracteres.")
     private String telefone;
 
     public Integer getId() {
