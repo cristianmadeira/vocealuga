@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="/fragments/head.html :: head">
+
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12">
+				<nav th:replace="fragments/nav.html :: nav"></nav>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-12" th:if="${error}">
+				<div th:replace="fragments/erros.html ::div(${error})"></div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-12" th:if="${success}">
+				<div th:replace="fragments/success.html ::div(${success})"></div>
+			</div>
+		</div>
+		<br />
+		<div class="row">
+			<div class=" col-10">
+				<a th:href="@{/oficinas/create}">
+					<button type="button" class="btn btn-secondary">
+						Adicionar Oficinas <i class="bi bi-plus"> </i>
+					</button>
+				</a>
+
+			</div>
+		</div>
+		<br />
+		<div class="row">
+
+			<div class="col-12">
+				<table id="table" class="table table-hover">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Nome</th>
+							<th>Ações</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each=" oficina : ${oficinas}">
+							<td th:text="${oficina.id}"></td>
+							<td th:text="${oficina.nome}"></td>
+							<td>
+								<div class="row">
+									<div class="col-2">
+										<a th:href="@{/oficinas/{id}/edit(id = ${oficina.id} )}">
+											<button type="button" class="btn btn-primary">Editar</button>
+										</a>
+									</div>
+									<div class="col-8">
+										<form method="POST"
+											th:action="@{/oficinas/{id}/delete(id = ${oficina.id})}">
+											<button type="submit" class="btn btn-danger">Excluir</button>
+										</form>
+									</div>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$("#table").DataTable();
+			});
+		</script>
+	</div>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/fragments/head.html :: head"></head>
+<body>
+	<div class="container-fluid">
+		<nav th:replace="fragments/nav.html :: nav"></nav>
+		<form th:object="${oficina}" th:action="${action}" method="POST" id="form" >
+			<div class="form-row">
+				<div class="form-group col-md-12">
+					<label
+						for="nome"
+						class="form-label"
+						th:classappend="${#fields.hasErrors('nome')} ? text-danger"
+						>Nome:
+					</label>
+					<input
+						type="text"
+						class="form-control"
+						th:classappend="${#fields.hasErrors('nome')}? is-invalid "
+						id="nome" 
+						name="nome" 
+						th:field="*{nome}" />
+						<div 
+							class="invalid-feedback d-block"
+							th:errors="*{nome}">
+						</div>
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="form-group col-md-8">
+					<label
+						for="nome"
+						class="form-label"
+						th:classappend="${#fields.hasErrors('nome')} ? text-danger"
+						>Email:
+					</label> 
+					<input
+						type="email"
+						class="form-control"
+						id="email" 
+						name="email" 
+						th:field="*{email}"
+						th:classappend="${#fields.hasErrors('email')}? is-invalid "
+						 />
+						<div class="invalid-feedback d-block" th:errors="*{email}">
+						</div>
+				</div>
+				<div class="form-group col-md-4">
+					<label
+						class="form-label"
+						th:classappend="${#fields.hasErrors('telefone')} ? text-danger"
+					 	for="nome">
+						 Telefone:
+					</label> 
+					<input 
+						type="tel"
+						class="form-control"
+						id="telefone" 
+						name="telefone" 
+						th:field="*{telefone}"
+						th:classappend="${#fields.hasErrors('telefone')}? is-invalid "
+						 />
+						<div class="invalid-feedback d-block" th:errors="*{telefone}">
+						</div>
+				</div>
+			</div>
+			<button type="submit" name="button" class="btn btn-primary">[[${buttonName}]]</button>
+		</form>
+	</div>
+</body>
+</html>
