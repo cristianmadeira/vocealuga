@@ -64,5 +64,47 @@ public class OficinaControllerTest {
         .andExpect(model().attributeHasFieldErrors("oficina", "nome"));
     }
 
+    @Test
+    @Order(4)
+    public void testeEditar() throws Exception{
+        this.mvc.perform(get("/oficinas/{id}/edit",this.oficina.getId()))
+            .andExpect(status().isOk())
+            .andExpect(model().attributeExists("oficina"))
+            .andExpect(view().name("oficinas/form"));
+    }
+    @Test
+    @Order(5)
+    public void testeEditarComIdInvalido() throws Exception{
+        this.mvc.perform(get("/oficinas/{id}/edit",-1))
+            .andExpect(status().isOk())
+            .andExpect(model().attributeExists("error"))
+            .andExpect(view().name("oficinas/index"));
+    }
+
+    @Test
+    @Order(6)
+    public void testUpdate() throws Exception{
+        this.oficina.setEmail("cristianmadeira1106@gmail.com");
+        this.mvc.perform(post("/oficinas/{id}/update",this.oficina.getId())
+        .param("nome","Nome Atualizado")
+        .param("email","emailatualizado@gmail.com")
+        .param("telefone","12345678910"))
+            .andExpect(status().isOk())
+            .andExpect(model().attributeExists("success"))
+            .andExpect(view().name("oficinas/index"));
+    }
+
+    @Test
+    @Order(7)
+    public void testUpdateWithInvalidId() throws Exception{
+        this.mvc.perform(post("/oficinas/{id}/update",this.oficina.getId())
+        .param("nome","")
+        .param("email","emailatualizado@gmail.com")
+        .param("telefone","12345678910"))
+            .andExpect(status().isOk())
+            .andExpect(model().attributeHasFieldErrors("oficina","nome"))
+            .andExpect(view().name("oficinas/form"));
+    }
+
 
 }
