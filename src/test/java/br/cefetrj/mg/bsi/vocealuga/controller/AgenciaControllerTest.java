@@ -3,15 +3,16 @@ package br.cefetrj.mg.bsi.vocealuga.controller;
 import static br.cefetrj.mg.bsi.vocealuga.utils.MessageUtils.getDeleteSuccessMessage;
 import static br.cefetrj.mg.bsi.vocealuga.utils.MessageUtils.getSaveSuccessMessage;
 import static br.cefetrj.mg.bsi.vocealuga.utils.MessageUtils.getUpdateSuccessMessage;
+import static org.hamcrest.Matchers.hasProperty;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
 
-import static org.hamcrest.Matchers.hasProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
@@ -22,7 +23,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
+import br.cefetrj.mg.bsi.vocealuga.faker.AgenciaFaker;
+import br.cefetrj.mg.bsi.vocealuga.faker.CargoFaker;
+import br.cefetrj.mg.bsi.vocealuga.faker.FuncionarioFaker;
 import br.cefetrj.mg.bsi.vocealuga.model.Agencia;
+import br.cefetrj.mg.bsi.vocealuga.model.Cargo;
+import br.cefetrj.mg.bsi.vocealuga.model.Funcionario;
 import br.cefetrj.mg.bsi.vocealuga.repository.AgenciaRepository;
 
 
@@ -34,36 +40,47 @@ class AgenciaControllerTest {
     @Autowired
     private MockMvc mvc;
     
-    private Agencia agencia;
+    private  Agencia agencia, agenciaWithEmployee, unsavedAgencia;
     
     @Autowired
     private AgenciaRepository repository;
     
-    private Agencia create() {
-        Agencia a = new Agencia();
-        a.setNome("FUNDACAO DE APOIO A ESCOLA TECNICA DO EST.RIO DE JANEIRO");
-        a.setBairro("QUINTINO BOCAIUVA");
-        a.setCep("21655340");
-        a.setCnpj(getFakerCnpj());
-        a.setLogradouro("R CLARIMUNDO DE MELO");
-        a.setMunicipio("RIO DE JANEIRO");
-        a.setNumero("847");
-        a.setUf("RJ");
-        return a;
-    }
-    private static  String getFakerCnpj(){
-        UUID uuid = UUID.randomUUID();
-        String myRandom = uuid.toString();
-        return myRandom.substring(0,14);
-    }
-
     @BeforeEach
-    void testAgenciaController() {
-        agencia = this.create();
-        agencia = this.repository.save(this.agencia);
+    public void setUp(){
+        unsavedAgencia =  createAgencia();
+        agencia = this.repository.save(createAgencia());
+        Cargo c1 = createCargo();
+
+        agenciaWithEmployee = createAgencia();
+
+        List<Funcionario> funcionarios = new ArrayList<>();
+        Funcionario f1= createFuncionario();
+        Funcionario f2= createFuncionario();
+        
+        f1.setAgencia(agenciaWithEmployee);
+        f1.setCargo(c1);
+        f2.setAgencia(agenciaWithEmployee);
+        f2.setCargo(c1);
+        
+        funcionarios.add(f1);
+        funcionarios.add(f2);
+        
+        agenciaWithEmployee.setFuncionarios(funcionarios);
+        
+        agenciaWithEmployee  = this.repository.save(agenciaWithEmployee);
         
     }
-
+    private Agencia createAgencia(){
+        return new AgenciaFaker().create();
+    }
+    private Funcionario createFuncionario(){
+        return new FuncionarioFaker().create();
+    }
+    private Cargo createCargo(){
+        return new CargoFaker().create();
+    }
+    
+    
     @Test
     @Order(2)
     void testCreate() throws Exception {
@@ -77,13 +94,13 @@ class AgenciaControllerTest {
     @Order(3)
     void testStore() throws Exception {
         this.mvc.perform(post("/agencias")
-            .param("cnpj", getFakerCnpj())
-            .param("nome", "Teste nome mock")
-            .param("cep", "12345678")
-            .param("logradouro", "Teste nome mock")
-            .param("numero", "Teste nome mock")
-            .param("bairro", "Teste nome mock")
-            .param("municipio", "Teste nome mock")
+            .param("cnpj", unsavedAgencia.getCnpj())
+            .param("nome", unsavedAgencia.getNome())
+            .param("cep", unsavedAgencia.getCep())
+            .param("logradouro", unsavedAgencia.getLogradouro())
+            .param("numero", unsavedAgencia.getNumero())
+            .param("bairro", unsavedAgencia.getBairro())
+            .param("municipio", unsavedAgencia.getMunicipio())
             .param("uf", "RJ")
             ).andExpect(status().isOk())
             .andExpect(model().attributeExists("success"))
@@ -98,7 +115,7 @@ class AgenciaControllerTest {
         this.mvc.perform(get("/agencias"))
             .andExpect(status().isOk())
             .andExpect(model().attributeExists("agencias"))
-            .andExpect(model().attributeDoesNotExist("error"));
+            .andExpect(view().name("agencias/index"));
 
 
 
@@ -116,16 +133,18 @@ class AgenciaControllerTest {
     @Test
     @Order(6)
     void testUpdate() throws Exception {
+
+        Agencia updatedAgencia = agencia;
         this.mvc.perform(
             post("/agencias/{id}/update", agencia.getId())
-            .param("cnpj", getFakerCnpj())
-            .param("nome", "Teste nome mock Update")
-            .param("cep", "87654321")
-            .param("logradouro", "Teste nome mock")
-            .param("numero", "Teste nome mock")
-            .param("bairro", "Teste nome mock")
-            .param("municipio", "Teste nome mock")
-            .param("uf", "ES"))
+            .param("cnpj", updatedAgencia.getCnpj())
+            .param("nome", updatedAgencia.getNome())
+            .param("cep", updatedAgencia.getCep())
+            .param("logradouro", updatedAgencia.getLogradouro())
+            .param("numero", updatedAgencia.getNumero())
+            .param("bairro", updatedAgencia.getBairro())
+            .param("municipio", updatedAgencia.getMunicipio())
+            .param("uf", "RJ"))
             .andExpect(status().isOk())
             .andExpect(model().attributeExists("success"))
             .andExpect(model().attribute("success", getUpdateSuccessMessage("agência")));
@@ -175,6 +194,15 @@ class AgenciaControllerTest {
             .andExpect(status().isOk())
             .andExpect(model().attributeExists("error"));
 
+    }
+
+    @Test
+    @Order(12)
+    public void testDeleteAgenciaWithEmployee() throws Exception{
+        this.mvc
+        .perform(post("/agencias/{id}/delete",agenciaWithEmployee.getId()))
+        .andExpect(status().isOk())
+        .andExpect(model().attributeExists("error"));
     }
 
 }

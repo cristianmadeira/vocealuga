@@ -1,11 +1,14 @@
 package br.cefetrj.mg.bsi.vocealuga.model;
 import java.time.LocalDateTime;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -26,6 +29,9 @@ public class Grupo {
 
 	@Size(min = 5, max = 50, message =  "O nome deve ter entre {min} e {max} caracteres.")
 	private String nome;
+
+	@OneToMany(cascade = CascadeType.PERSIST, mappedBy = "grupo")
+	private List<Veiculo> veiculos;
 
 	@Column(updatable = false)
 	@CreationTimestamp
@@ -70,5 +76,12 @@ public class Grupo {
 	}
 	public void setDeletedAt(LocalDateTime deletedAt) {
 		this.deletedAt = deletedAt;
+	}
+
+	public void setVeiculos(List<Veiculo> veiculos) {
+		this.veiculos = veiculos;
+	}
+	public List<Veiculo> getVeiculos() {
+		return veiculos;
 	}
 }

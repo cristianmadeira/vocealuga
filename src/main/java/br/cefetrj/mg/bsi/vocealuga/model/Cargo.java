@@ -1,17 +1,22 @@
 package br.cefetrj.mg.bsi.vocealuga.model;
 
 import java.time.LocalDateTime;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.Where;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 
 @Entity
 @SQLDelete(sql = "UPDATE cargo SET deleted_at = current_timestamp() WHERE id = ?")
@@ -24,7 +29,12 @@ public class Cargo {
 
     @Column(nullable = false, length = 50)
     @Size(min = 5, max = 50, message = "O nome deve ter entre {min} e {max} caracteres. ")
+    @NotBlank(message = "O nome não deve estar em branco.")
     private String nome;
+
+
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "cargo")
+    private List<Funcionario> funcionarios;
 
     @Column(updatable = false)
     @CreationTimestamp
@@ -67,5 +77,11 @@ public class Cargo {
         this.deletedAt = deletedAt;
     }
 
+    public List<Funcionario> getFuncionarios() {
+        return funcionarios;
+    }
+    public void setFuncionarios(List<Funcionario> funcionarios) {
+        this.funcionarios = funcionarios;
+    }
 
 }

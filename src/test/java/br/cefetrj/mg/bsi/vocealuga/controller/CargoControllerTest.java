@@ -3,12 +3,14 @@ package br.cefetrj.mg.bsi.vocealuga.controller;
 import static br.cefetrj.mg.bsi.vocealuga.utils.MessageUtils.getDeleteSuccessMessage;
 import static br.cefetrj.mg.bsi.vocealuga.utils.MessageUtils.getSaveSuccessMessage;
 import static br.cefetrj.mg.bsi.vocealuga.utils.MessageUtils.getUpdateSuccessMessage;
-import static org.junit.Assert.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
@@ -20,7 +22,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
+import br.cefetrj.mg.bsi.vocealuga.faker.AgenciaFaker;
+import br.cefetrj.mg.bsi.vocealuga.faker.CargoFaker;
+import br.cefetrj.mg.bsi.vocealuga.faker.FuncionarioFaker;
+import br.cefetrj.mg.bsi.vocealuga.model.Agencia;
 import br.cefetrj.mg.bsi.vocealuga.model.Cargo;
+import br.cefetrj.mg.bsi.vocealuga.model.Funcionario;
 import br.cefetrj.mg.bsi.vocealuga.repository.CargoRepository;
 
 @SpringBootTest
@@ -28,23 +35,45 @@ import br.cefetrj.mg.bsi.vocealuga.repository.CargoRepository;
 @TestMethodOrder(OrderAnnotation.class)
 class CargoControllerTest {
 
-    @Autowired
     private MockMvc mvc;
-    
-    private Cargo cargo;
-    
-    @Autowired
+    private Cargo cargo, cargoWithEmployee;
     private CargoRepository repository;
     
+    
 
-    @BeforeEach
-    void testCargoController() {
-        cargo = new Cargo();
-        cargo.setNome("Cargo Válido");
-        this.cargo = this.repository.save(this.cargo);
-        assertNotNull(this.cargo);
+    @Autowired
+    public CargoControllerTest(CargoRepository repository, MockMvc mvc ){
+        this.repository = repository;
+        this.mvc = mvc;
+        
+        
     }
 
+    @BeforeEach
+    public void setUp(){
+        cargo =  this.repository.save(createCargo());
+        
+        cargoWithEmployee = createCargo();
+        
+        List<Funcionario> funcionarios = new ArrayList<>();
+        Funcionario f1 = createFuncionario();
+        f1.setAgencia(createAgencia());
+        f1.setCargo(cargoWithEmployee);
+        funcionarios.add(f1);
+        
+        cargoWithEmployee.setFuncionarios(funcionarios);
+        cargoWithEmployee  = this.repository.save(cargoWithEmployee);
+    }
+    private Cargo createCargo(){
+        return new CargoFaker().create();
+    }
+    
+    private Funcionario createFuncionario(){
+        return new FuncionarioFaker().create();
+    }
+    private Agencia createAgencia(){
+        return new AgenciaFaker().create();
+    }
     @Test
     @Order(2)
     void testCreate() throws Exception {
@@ -131,6 +160,14 @@ class CargoControllerTest {
         this.mvc.perform(post("/cargos/{id}/delete", -1)).andExpect(status().isOk())
                 .andExpect(model().attributeExists("error"));
 
+    }
+    @Test
+    @Order(12)
+    void testDeleteCargoWithEmployee() throws Exception{
+        this.mvc
+            .perform(post("/cargos/{id}/delete",cargoWithEmployee.getId()))
+            .andExpect(status().isOk())
+            .andExpect(model().attributeExists("error"));
     }
 
 }

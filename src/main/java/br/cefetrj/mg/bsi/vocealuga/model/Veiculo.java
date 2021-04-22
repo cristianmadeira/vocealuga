@@ -2,6 +2,7 @@ package br.cefetrj.mg.bsi.vocealuga.model;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -57,12 +58,12 @@ public class Veiculo {
 //    @Size(min = 2, max = 2, message = "A deve conter entre {min} e {max} caracteres.")
     private boolean disponivel;
 
-    @ManyToOne
-    @JoinColumn(nullable = false, name = "agencia_id")
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn()
     private Agencia agencia;
     
-    @ManyToOne
-    @JoinColumn(nullable = false, name = "grupo_id")
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn()
     private Grupo grupo;
 
     @Column(updatable = false, nullable = false)

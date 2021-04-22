@@ -1,18 +1,21 @@
 package br.cefetrj.mg.bsi.vocealuga.model;
 
 import java.time.LocalDateTime;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.Size;
+
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.Where;
-import java.util.List;
-import javax.persistence.OneToMany;
 @Entity
 @SQLDelete(sql = "UPDATE agencia SET deleted_at = current_timestamp()  WHERE id = ? ")
 @Where(clause = "deleted_at is null")
@@ -53,8 +56,11 @@ public class Agencia{
     @Size(min = 2, max = 2, message = "A UF conter {max} caracteres.")
     private String uf;
 
-	@OneToMany(mappedBy ="agencia")
+	@OneToMany(mappedBy ="agencia", cascade = CascadeType.PERSIST)
 	private List<Veiculo> veiculos;
+
+	@OneToMany(mappedBy="agencia", cascade = CascadeType.PERSIST)
+	private List<Funcionario> funcionarios;
 	
 	@Column(updatable = false)
 	@CreationTimestamp
@@ -157,5 +163,10 @@ public class Agencia{
 		return deletedAt;
 	}
     
-    
+	public void setFuncionarios(List<Funcionario> funcionarios) {
+		this.funcionarios = funcionarios;
+	}    
+	public List<Funcionario> getFuncionarios() {
+		return funcionarios;
+	}
 }
