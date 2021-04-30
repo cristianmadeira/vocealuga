@@ -11,7 +11,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotBlank;
+<<<<<<< HEAD
 import javax.validation.constraints.NotNull;
+=======
+>>>>>>> f45330b2d27289e8dedac96746e7209c2395fb7e
 import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -50,12 +53,20 @@ public class Veiculo {
     private String marca;
     
     @Column(nullable = false, length = 2)
+<<<<<<< HEAD
     @NotNull(message = "A revisão não pode estar em branco.")
+=======
+    @NotBlank(message = "A revisão não pode estar em branco.")
+>>>>>>> f45330b2d27289e8dedac96746e7209c2395fb7e
     // @Size(min = 2, max = 2, message = "A deve conter entre {min} e {max} caracteres.")
     private boolean estaRevisado;
 
     @Column(nullable = false, length = 2)
+<<<<<<< HEAD
     @NotNull(message = "A revisão não pode estar em branco.")
+=======
+    @NotBlank(message = "A revisão não pode estar em branco.")
+>>>>>>> f45330b2d27289e8dedac96746e7209c2395fb7e
 //    @Size(min = 2, max = 2, message = "A deve conter entre {min} e {max} caracteres.")
     private boolean disponivel;
 
