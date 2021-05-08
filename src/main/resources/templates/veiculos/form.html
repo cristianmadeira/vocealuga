@@ -1,0 +1,43 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/fragments/head.html :: head"></head>
+<body>
+    <div class="container-fluid">
+        <nav th:replace="fragments/nav.html :: nav"></nav>
+        <form th:object="${veiculo}" th:action="${action}" method="POST" id="form">
+            <div class="form-row">
+                
+                <div class="form-group col-md-4">
+                    <label for="placa">Placa</label> <input type="text" class="form-control" id="placa" name="placa" th:field="*{placa}" />
+                    <div class="invalid-feedback d-block" th:errors="*{placa}"></div>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="cor">Cor</label> <input type="text" class="form-control" id="cor" name="cor" th:field="*{cor}" />
+                    <div class="invalid-feedback d-block" th:errors="*{cor}"></div>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="kmRodado">Km Rodado</label> <input type="text" class="form-control" id="kmRodado" name="kmRodado" th:field="*{kmRodado}" />
+                    <div class="invalid-feedback d-block" th:errors="*{kmRodado}"></div>
+                </div>
+
+                <div class="form-group col-md-4">
+                    <label for="marca">Marca</label> <input type="text" class="form-control" id="marca" name="marca" th:field="*{marca}" />
+                    <div class="invalid-feedback d-block" th:errors="*{marca}"></div>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="estaRevisado">Esta Revisado</label><br> 
+                    <label for="sim">Sim</label> <input type="radio" id="sim" name="estaRevisado" value=true th:field="*{estaRevisado}" />
+                    <label for="nao">Não</label> <input type="radio" id="nao" name="estaRevisado" value=false th:field="*{estaRevisado}" />
+                    <div class="invalid-feedback d-block" th:errors="*{estaRevisado}"></div>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="disponivel">Disponivel</label><br>
+                    <label for="sim">Sim</label> <input type="radio" id="sim" name="disponivel" value=true th:field="*{disponivel}" />
+                    <label for="nao">Não</label> <input type="radio" id="nao" name="disponivel" value=false th:field="*{disponivel}" />
+                    <div class="invalid-feedback d-block" th:errors="*{disponivel}"></div>
+                </div>
+            </div>
+            <button type="submit" name="button" class="btn btn-primary">[[${buttonName}]]</button>
+        </form>
+    </div>
+</body>
+</html>
