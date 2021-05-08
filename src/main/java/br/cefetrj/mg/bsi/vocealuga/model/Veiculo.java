@@ -50,13 +50,12 @@ public class Veiculo {
     private String marca;
     
     @Column(nullable = false, length = 2)
-    @NotNull(message = "A revisão não pode estar em branco.")
-    // @Size(min = 2, max = 2, message = "A deve conter entre {min} e {max} caracteres.")
+    @NotBlank(message = "A revisão não pode estar em branco.")
     private boolean estaRevisado;
 
     @Column(nullable = false, length = 2)
+
     @NotNull(message = "A revisão não pode estar em branco.")
-//    @Size(min = 2, max = 2, message = "A deve conter entre {min} e {max} caracteres.")
     private boolean disponivel;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
