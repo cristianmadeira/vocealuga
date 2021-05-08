@@ -106,5 +106,22 @@ public class OficinaControllerTest {
             .andExpect(view().name("oficinas/form"));
     }
 
+    @Test
+    @Order(8)
+    public void testDeleteWithValidId() throws Exception{
+        this.mvc
+        .perform(post("/oficinas/{id}/delete", oficina.getId()))
+        .andExpect(status().isOk())
+        .andExpect(model().attributeExists("success"));
+    }
+
+    @Test
+    @Order(9)
+    public void testDeleteWithInvalidId() throws Exception{
+        this.mvc
+        .perform(post("/oficinas/{id}/delete", -1))
+        .andExpect(status().isOk())
+        .andExpect(model().attributeExists("error"));
+    }
 
 }

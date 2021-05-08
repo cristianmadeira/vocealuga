@@ -1,22 +1,22 @@
 package br.cefetrj.mg.bsi.vocealuga.controller;
 
-import javax.validation.Valid;
-import static br.cefetrj.mg.bsi.vocealuga.utils.MessageUtils.getDeleteSuccessMessage;
 import static br.cefetrj.mg.bsi.vocealuga.utils.MessageUtils.getSaveSuccessMessage;
 import static br.cefetrj.mg.bsi.vocealuga.utils.MessageUtils.getUpdateSuccessMessage;
+import static br.cefetrj.mg.bsi.vocealuga.utils.MessageUtils.getDeleteSuccessMessage;
+
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import br.cefetrj.mg.bsi.vocealuga.exception.InvalidIdException;
-import br.cefetrj.mg.bsi.vocealuga.exception.ResultNotFoundException;
 import br.cefetrj.mg.bsi.vocealuga.model.Oficina;
 import br.cefetrj.mg.bsi.vocealuga.repository.OficinaRepository;
 
@@ -84,5 +84,20 @@ public class OficinaController {
             this.repository.save(oficina);
             modelAndView.addObject("success", getUpdateSuccessMessage("oficina"));
         return index(modelAndView);
+    }
+
+    @PostMapping("/{id}/delete")
+    public ModelAndView delete(@PathVariable("id") int id, ModelAndView modelAndView) {
+        
+        try{
+            Oficina oficina = this.repository.findById(id).orElseThrow(()->new InvalidIdException(id));
+            this.repository.delete(oficina);
+            modelAndView.addObject("success", getDeleteSuccessMessage("oficina"));
+        }catch(InvalidIdException e){
+            modelAndView.addObject("error", e.getMessage());
+        }
+        
+        return index(modelAndView);
+
     }
 }
