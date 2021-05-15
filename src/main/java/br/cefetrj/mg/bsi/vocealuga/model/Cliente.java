@@ -2,16 +2,23 @@ package br.cefetrj.mg.bsi.vocealuga.model;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.ManyToAny;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.Where;
@@ -56,6 +63,15 @@ public class Cliente {
     @Column(nullable = false)
     @NotBlank(message = "Deve ser especificado se há ou não uma Apólice de seguro.")
     private Boolean apolice;
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(
+        name = "clientes_pedidos",
+        joinColumns = @JoinColumn(name = "cliente_id", referencedColumnName = "id"),
+        inverseJoinColumns = @JoinColumn(name = "pedidos_id", referencedColumnName = "id")
+
+    )
+    private List<Pedido> pedidos;
 
     @Column(updatable = false)
     @CreationTimestamp
@@ -156,6 +172,11 @@ public class Cliente {
         this.deletedAt = deletedAt;
     }
 
-
+    public List<Pedido> getPedidos() {
+        return pedidos;
+    }
+    public void setPedidos(List<Pedido> pedidos) {
+        this.pedidos = pedidos;
+    }
 
 }
