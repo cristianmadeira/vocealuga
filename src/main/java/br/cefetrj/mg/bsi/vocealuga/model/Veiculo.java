@@ -41,6 +41,7 @@ public class Veiculo {
     
     @Column(nullable = false, length = 6)
     @NotBlank(message = "A quilometeragem não pode estar em branco.")
+    @Size(min = 1, max = 6, message = "A cor deve conter entre {min} e {max} caracteres.")
     private String kmRodado;
 
     @Column(nullable = false, length = 25)
@@ -49,7 +50,7 @@ public class Veiculo {
     private String marca;
     
     @Column(nullable = false, length = 2)
-    @NotNull(message = "A revisão não pode estar em branco.")
+    @NotBlank(message = "A revisão não pode estar em branco.")
     private boolean estaRevisado;
 
     @Column(nullable = false, length = 2)
