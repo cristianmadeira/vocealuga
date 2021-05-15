@@ -1,5 +1,24 @@
 package br.cefetrj.mg.bsi.vocealuga.model;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.Where;
+
+@Entity
+@SQLDelete(sql =  "UPDATE agencia SET deleted_at = current_timestamp() where id = ?")
+@Where(clause = "deleted_at is null")
 public class Cliente {
 
     @Id 
@@ -21,26 +40,32 @@ public class Cliente {
     @Size(min = 8, max = 10, message = "A Data de nascimento deve conter entre {min} e {max} caracteres")
     private LocalDate dtNascimento;
 
-    @Column(nullable = false, lenght = 2)
+    @Column(nullable = false)
     @NotBlank(message = "Deve ser especificado se está ou não na Lista Negra")
     private Boolean listaNegra;
 
-    @Column(nullable = false, lenght = 16)
+    @Column(nullable = false, length = 16)
     @NotBlank(message = "O Cartão de crédito não pode estar em branco")
     @Size(min = 16, max = 16, message = "O Cartão de crédito deve conter {max} caracteres")
-    // Confirmar se cartões de créditos podem contar menos ou mais números.
     private String cartaoCredito;
 
+    @Column(length = 11, unique = true)
     @Size(min = 11, max = 11, message = "A CNH deve conter {max} caracteres")
-    // Confirmar se CNH podem conter menos ou mais números, e se possui o hífen do dígito final.
     private String cnh;
 
-    @Column(nullable = false, lenght = 2)
+    @Column(nullable = false)
     @NotBlank(message = "Deve ser especificado se há ou não uma Apólice de seguro.")
     private Boolean apolice;
 
+    @Column(updatable = false)
+    @CreationTimestamp
     private LocalDateTime createdAt;
+
+    @Column(insertable = false)
+    @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    @Column
     private LocalDateTime deletedAt;
 
     public Integer getId() {
