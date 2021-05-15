@@ -1,24 +1,24 @@
 package br.cefetrj.mg.bsi.vocealuga.controller;
 
+import static br.cefetrj.mg.bsi.vocealuga.utils.MessageUtils.getDeleteSuccessMessage;
+import static br.cefetrj.mg.bsi.vocealuga.utils.MessageUtils.getSaveSuccessMessage;
+import static br.cefetrj.mg.bsi.vocealuga.utils.MessageUtils.getUpdateSuccessMessage;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.Errors;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 import br.cefetrj.mg.bsi.vocealuga.exception.InvalidIdException;
 import br.cefetrj.mg.bsi.vocealuga.model.Veiculo;
 import br.cefetrj.mg.bsi.vocealuga.repository.VeiculoRepository;
-
-import static br.cefetrj.mg.bsi.vocealuga.utils.MessageUtils.*;
-
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/veiculos")
@@ -28,75 +28,81 @@ public class VeiculoController {
     private VeiculoRepository repository;
 
     @GetMapping
-    public String index(Model model){
-        model.addAttribute("veiculos", repository.findAll());
-        return "veiculos/index";
+    public ModelAndView index(ModelAndView modelAndView){
+        modelAndView.setViewName("veiculos/index");
+        modelAndView.addObject("veiculos", repository.findAll());
+        return modelAndView;
     }
 
     @GetMapping("/create")
-    public String create(Model model){
-        model.addAttribute("veiculo",  new Veiculo());
-        model.addAttribute("method",          "POST");
-        model.addAttribute("buttonName", "Cadastrar");
-        model.addAttribute("action",    "/veiculos/");
-        return "veiculos/form";
+    public ModelAndView create(ModelAndView modelAndView, Veiculo veiculo){
+        modelAndView.addObject("veiculo",  veiculo);
+        modelAndView.addObject("method",          "POST");
+        modelAndView.addObject("buttonName", "Cadastrar");
+        modelAndView.addObject("action",    "/veiculos/");
+        modelAndView.setViewName("veiculos/form");
+        return modelAndView;
     }
 
     @PostMapping
-    public String store(@Valid @ModelAttribute("veiculo")Veiculo veiculo, Errors errors, Model model) {
-        if(errors.hasErrors()){
-            model.addAttribute("method",          "POST");
-            model.addAttribute("buttonName", "Cadastrar");
-            model.addAttribute("action",    "/veiculos/");
-            return "veiculos/form";
+    public ModelAndView store(
+        @Valid @ModelAttribute("veiculo")Veiculo veiculo,
+        BindingResult result,
+        ModelAndView modelAndView) {
+        if(result.hasErrors()){
+            return create(modelAndView,veiculo);
+            
         }
         this.repository.save(veiculo);
-        model.addAttribute("success", getSaveSuccessMessage("veiculo"));
-        return index(model);
+        modelAndView.addObject("success", getSaveSuccessMessage("veiculo"));
+        return index(modelAndView);
     }
 
     @GetMapping("/{id}/edit")
-    public String edit(@PathVariable("id") int id, Model model) {
+    public ModelAndView edit(
+        @PathVariable("id") int id,
+        ModelAndView modelAndView,
+        Veiculo veiculo,
+        Boolean hasErrors) {
         try {
-            Optional<Veiculo> opt = this.repository.findById(id);
-            if(opt.isEmpty())
-                throw new InvalidIdException(id);
-            model.addAttribute("veiculo",      opt.get());
-            model.addAttribute("method",          "POST");
-            model.addAttribute("buttonName", "Atualizar");
-            model.addAttribute("action", "/veiculos/" + id + "/update");
-            return "veiculos/form";
+            if( hasErrors == null)
+                veiculo  = this.repository.findById(id).orElseThrow(()->new InvalidIdException(id));
+            modelAndView.addObject("veiculo",      veiculo);
+            modelAndView.addObject("method",          "POST");
+            modelAndView.addObject("buttonName", "Atualizar");
+            modelAndView.addObject("action", "/veiculos/" + id + "/update");
+            modelAndView.setViewName("veiculos/form");
+            return modelAndView;
         } catch (InvalidIdException e) {
-            model.addAttribute("error", e.getMessage());
-            return index(model);
+            modelAndView.addObject("error", e.getMessage());
+            return index(modelAndView);
         }
     }
 
     @PostMapping("/{id}/update")
-    public String update(@PathVariable("id") int id, @Valid @ModelAttribute("veiculo") Veiculo veiculo, Errors errors, Model model) {
-        if(errors.hasErrors()) {
-            model.addAttribute("method",          "POST");
-            model.addAttribute("buttonName", "Atualizar");
-            model.addAttribute("action", "/veiculos/" + id + "/update");
-            return "veiculos/form";
+    public ModelAndView update(
+        @PathVariable("id") int id,
+        @Valid @ModelAttribute("veiculo") Veiculo veiculo,
+        BindingResult result,
+        ModelAndView modelAndView) {
+        if(result.hasErrors()) {
+            return edit(id,modelAndView,veiculo,true);
         }
         this.repository.save(veiculo);
-        model.addAttribute("success", getUpdateSuccessMessage("veiculo"));
-        return index(model);
+        modelAndView.addObject("success", getUpdateSuccessMessage("veiculo"));
+        return index(modelAndView);
     }
 
     @PostMapping("/{id}/delete")
-    public String delete(@PathVariable("id") int id, Model model) {
+    public ModelAndView delete(@PathVariable("id") int id, ModelAndView modelAndView) {
         try {
-            Optional<Veiculo> opt = this.repository.findById(id);
-            if(opt.isEmpty())
-                throw new InvalidIdException(id);
-            this.repository.delete(opt.get());
-            model.addAttribute("success", getDeleteSuccessMessage("veiculo"));
+            Veiculo veiculo = this.repository.findById(id).orElseThrow(()->new InvalidIdException(id));
+            this.repository.delete(veiculo);
+            modelAndView.addObject("success", getDeleteSuccessMessage("veiculo"));
         } catch (InvalidIdException e) {
-            model.addAttribute("error", e.getMessage());
+            modelAndView.addObject("error", e.getMessage());
         }
-        return index(model);
+        return index(modelAndView);
     }
 
 }

@@ -19,6 +19,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
+import br.cefetrj.mg.bsi.vocealuga.faker.VeiculoFaker;
 import br.cefetrj.mg.bsi.vocealuga.model.Veiculo;
 import br.cefetrj.mg.bsi.vocealuga.repository.VeiculoRepository;
 
@@ -36,13 +37,16 @@ public class VeiculoControllerTest {
     @Autowired
     private VeiculoRepository repository;
 
-    private static Veiculo veiculo = new Veiculo();
 
-    // @BeforeEach
-    // public void setUp(){
-    //     veiculo.setMarca("marca");
-    //     veiculo = repository.save(veiculo);
-    // }
+    private  Veiculo veiculo = new Veiculo();
+
+    private Veiculo create(){
+        return new VeiculoFaker().create();
+    }
+    @BeforeEach
+    public void setUp(){
+        veiculo = repository.save(create());
+    }
 
     @Test
     @Order(1)
@@ -97,7 +101,15 @@ public class VeiculoControllerTest {
     @Order(7)
     void testUpdate() throws Exception {
         this.mvc.perform(post("/veiculos/{id}/update", veiculo.getId())
-        .param("marca", "Marca nova"))
+        .param("placa",         "spl0000")
+        .param("cor",          "Vermelho Teste")
+        .param("kmRodado",       "101000")
+        .param("marca",         "Porsche")
+        .param("estaRevisado",    Boolean.toString(false))
+        .param("disponivel",    Boolean.toString(false))
+        .param("agencia",veiculo.getAgencia().getId().toString())
+        .param("grupo",veiculo.getGrupo().getId().toString())
+        .param("created_at",veiculo.getCreatedAt().toString()))
         .andExpect(status().isOk())
         .andExpect(model().attributeExists("success"))
         .andExpect(model().attribute("success", getUpdateSuccessMessage("veiculo")));
