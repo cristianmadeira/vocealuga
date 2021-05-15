@@ -8,7 +8,13 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+
+
 @Entity
+@SQLDelete(sql = "UPDATE oficina SET deleted_at = current_timestamp() WHERE id = ?")
+@Where(clause = "deleted_at is null")
 public class Oficina {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
