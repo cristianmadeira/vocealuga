@@ -14,9 +14,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.ManyToAny;
 import org.hibernate.annotations.SQLDelete;
@@ -38,21 +40,17 @@ public class Cliente {
     private String nome;
 
     @Column(nullable = false, length = 11, unique = true)
-    @NotBlank(message = "O CPF não pode estar em branco")
     @Size(min = 11, max = 11, message = "O CPF deve conter {max} caracteres")
     private String cpf;
 
-    @Column(nullable = false, length = 10)
-    @NotBlank(message = "A Data de nascimento não pode estar em branco")
-    @Size(min = 8, max = 10, message = "A Data de nascimento deve conter entre {min} e {max} caracteres")
+    @Column()
     private LocalDate dtNascimento;
 
-    @Column(nullable = false)
-    @NotBlank(message = "Deve ser especificado se está ou não na Lista Negra")
+    @Column()
+    @ColumnDefault(value = "0")
     private Boolean listaNegra;
 
-    @Column(nullable = false, length = 16)
-    @NotBlank(message = "O Cartão de crédito não pode estar em branco")
+    @Column(length = 16)
     @Size(min = 16, max = 16, message = "O Cartão de crédito deve conter {max} caracteres")
     private String cartaoCredito;
 
@@ -60,9 +58,12 @@ public class Cliente {
     @Size(min = 11, max = 11, message = "A CNH deve conter {max} caracteres")
     private String cnh;
 
+    @Email
+    @NotBlank
+    private String email;
+
     @Column(nullable = false)
-    @NotBlank(message = "Deve ser especificado se há ou não uma Apólice de seguro.")
-    private Boolean apolice;
+    private Boolean apolice = false;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
@@ -179,4 +180,10 @@ public class Cliente {
         this.pedidos = pedidos;
     }
 
+    public String getEmail() {
+        return email;
+    }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 }
