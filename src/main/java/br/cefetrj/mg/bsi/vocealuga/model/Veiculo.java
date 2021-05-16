@@ -50,7 +50,7 @@ public class Veiculo {
     private String marca;
     
     @Column(nullable = false, length = 2)
-    @NotBlank(message = "A revisão não pode estar em branco.")
+    @NotNull
     private boolean estaRevisado;
 
     @Column(nullable = false, length = 2)
