@@ -5,6 +5,26 @@
 	<nav th:replace="fragments/nav.html :: nav"></nav>
 	<div class="container-fluid">
 		
+
+		<div class="row">
+            <div class="col-12" th:if="${success}">
+                <div th:replace="fragments/success.html ::div(${success})"></div>
+            </div>
+        </div>
+		<div class="row">
+			<div class="col-sm-3" th:each=" veiculo :${veiculos}">
+				<img class="card-img-top" th:src="@{/img/astra.jpeg}" alt="Card image cap">
+			  <div class="card">
+				<div class="card-body">
+				  <h5 class="card-title">[[${veiculo.marca}]]</h5>
+				  <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+				  <a href="#" class="btn btn-primary">Selecionar</a>
+				</div>
+			  </div>
+			</div>
+		</div>
+		
+		
 	</div>
 </body>
 </html>
