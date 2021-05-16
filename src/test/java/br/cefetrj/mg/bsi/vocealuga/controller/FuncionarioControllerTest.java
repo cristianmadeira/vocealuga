@@ -9,17 +9,22 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.*;
 
 import java.util.UUID;
 
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import br.cefetrj.mg.bsi.vocealuga.faker.AgenciaFaker;
 import br.cefetrj.mg.bsi.vocealuga.faker.CargoFaker;
@@ -42,14 +47,29 @@ public class FuncionarioControllerTest {
 
     
 
+    private WebApplicationContext context;
+
     @Autowired
-    public FuncionarioControllerTest(FuncionarioRepository repository, MockMvc mvc){
+    public FuncionarioControllerTest(
+        FuncionarioRepository repository,
+        MockMvc mvc,
+        WebApplicationContext context
+        ){
         this.repository = repository;
         this.mvc = mvc;
         funcionario = createFuncionario();
         funcionario = saveFuncionario(funcionario);
+        this.context = context;
     }
 
+    
+    @BeforeEach
+    public void setup() {
+        mvc = MockMvcBuilders
+            .webAppContextSetup(context)
+            .apply(springSecurity())
+            .build();
+    }
     private  Funcionario createFuncionario(){
         FuncionarioFaker faker = new FuncionarioFaker();
         Funcionario f = faker.create();
@@ -66,6 +86,7 @@ public class FuncionarioControllerTest {
     private Agencia createAgencia(){
         return new AgenciaFaker().create();
     }
+    @WithMockUser()
     @Test
     @Order(1)
     public void testIndex() throws Exception{
@@ -73,6 +94,7 @@ public class FuncionarioControllerTest {
         .andExpect(model().attribute("funcionarios", allOf(hasItem(hasProperty("nome",equalTo(funcionario.getNome()))))))
         .andExpect(view().name("funcionarios/index"));    
     }
+    @WithMockUser()
     @Test
     @Order(2)
     public void testStoreWithValidEmployee() throws Exception {
@@ -90,6 +112,7 @@ public class FuncionarioControllerTest {
             .andExpect(status().isOk())
             .andExpect(model().attributeExists("success"));
     }
+    @WithMockUser()
     @Test
     @Order(3)
     public void testStoreWithInvalidEmployee() throws Exception{
@@ -98,6 +121,7 @@ public class FuncionarioControllerTest {
         .andExpect(model().attributeHasFieldErrors("funcionario","email"));
     }
 
+    @WithMockUser()
     @Test
     @Order(4)
     public void testCreate() throws Exception{
@@ -110,6 +134,7 @@ public class FuncionarioControllerTest {
         .andExpect(model().attributeExists("cargos"));
     }
 
+    @WithMockUser()
     @Test
     @Order(5)
     public void testEditWithValidId() throws Exception{
@@ -122,6 +147,7 @@ public class FuncionarioControllerTest {
         .andExpect(model().attributeExists("cargos"));
     }
 
+    @WithMockUser()
     @Test
     @Order(6)
     public void testEditWithIndvalidId() throws Exception{
@@ -131,6 +157,7 @@ public class FuncionarioControllerTest {
         .andExpect(model().attributeExists("error"));
         
     }
+    @WithMockUser()
     @Test
     @Order(7)
     public void testupdateWithValidEmployee() throws Exception {
@@ -149,6 +176,7 @@ public class FuncionarioControllerTest {
             .andExpect(model().attributeExists("success"));
             
     }
+    @WithMockUser()
     @Test
     @Order(8)
     public void testupdateWithIndalidEmployee() throws Exception {
@@ -166,6 +194,7 @@ public class FuncionarioControllerTest {
             .andExpect(model().attributeHasFieldErrors("funcionario", "nome"));
     }
 
+    @WithMockUser()
     @Test
     @Order(9)
     public void testDeleteWithValidId() throws Exception{
@@ -174,6 +203,7 @@ public class FuncionarioControllerTest {
         .andExpect(status().isOk())
         .andExpect(model().attributeExists("success"));
     }
+    @WithMockUser()
     @Test
     @Order(10)
     public void testDeleteWithInvalidId() throws Exception{

@@ -21,7 +21,12 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import br.cefetrj.mg.bsi.vocealuga.faker.AgenciaFaker;
 import br.cefetrj.mg.bsi.vocealuga.faker.CargoFaker;
@@ -31,6 +36,7 @@ import br.cefetrj.mg.bsi.vocealuga.model.Cargo;
 import br.cefetrj.mg.bsi.vocealuga.model.Funcionario;
 import br.cefetrj.mg.bsi.vocealuga.repository.AgenciaRepository;
 
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -44,6 +50,17 @@ class AgenciaControllerTest {
     
     @Autowired
     private AgenciaRepository repository;
+    
+    @Autowired
+    private WebApplicationContext context;
+
+    @BeforeEach
+    public void setup() {
+        mvc = MockMvcBuilders
+            .webAppContextSetup(context)
+            .apply(springSecurity())
+            .build();
+    }
     
     @BeforeEach
     public void setUp(){
@@ -81,6 +98,7 @@ class AgenciaControllerTest {
     }
     
     
+    @WithMockUser()
     @Test
     @Order(2)
     void testCreate() throws Exception {
@@ -89,7 +107,7 @@ class AgenciaControllerTest {
             .andExpect(model().attributeExists("agencia"))
             .andExpect(view().name("agencias/form"));
     }
-
+    @WithMockUser()
     @Test
     @Order(3)
     void testStore() throws Exception {
@@ -108,7 +126,7 @@ class AgenciaControllerTest {
             .andExpect(model().attribute("agencia", hasProperty("createdAt")));
             
     }
-
+    @WithMockUser()
     @Test
     @Order(4)
     void testIndex() throws Exception {
@@ -120,7 +138,7 @@ class AgenciaControllerTest {
 
 
     }
-
+    @WithMockUser()
     @Test
     @Order(5)
     void testEdit() throws Exception {
@@ -130,6 +148,7 @@ class AgenciaControllerTest {
 
     }
 
+    @WithMockUser()
     @Test
     @Order(6)
     void testUpdate() throws Exception {
@@ -150,6 +169,7 @@ class AgenciaControllerTest {
             .andExpect(model().attribute("success", getUpdateSuccessMessage("agência")));
     }
 
+    @WithMockUser()
     @Test
     @Order(7)
     void testDelete() throws Exception {
@@ -159,6 +179,7 @@ class AgenciaControllerTest {
             .andExpect(model().attribute("success", getDeleteSuccessMessage("agência")));
     }
 
+    @WithMockUser()
     @Test
     @Order(8)
     void testSaveEmptyName() throws Exception {
@@ -169,6 +190,7 @@ class AgenciaControllerTest {
             
     }
 
+    @WithMockUser()
     @Test
     @Order(9)
     void testUpdateEmptyName() throws Exception {
@@ -178,6 +200,7 @@ class AgenciaControllerTest {
                 
     }
 
+    @WithMockUser()
     @Test
     @Order(10)
     void testEditInvalidId() throws Exception {
@@ -187,6 +210,7 @@ class AgenciaControllerTest {
 
     }
 
+    @WithMockUser()
     @Test
     @Order(11)
     void testDeleteInvalidId() throws Exception {
@@ -196,6 +220,7 @@ class AgenciaControllerTest {
 
     }
 
+    @WithMockUser()
     @Test
     @Order(12)
     public void testDeleteAgenciaWithEmployee() throws Exception{

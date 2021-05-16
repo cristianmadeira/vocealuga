@@ -17,10 +17,14 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import br.cefetrj.mg.bsi.vocealuga.model.Grupo;
 import br.cefetrj.mg.bsi.vocealuga.repository.GrupoRepository;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -36,19 +40,27 @@ class GrupoControllerTest {
 	@Autowired
 	private GrupoRepository repository;
 
+	@Autowired
+    private WebApplicationContext context;
 	private static Grupo grupo = new Grupo();
 
 	@BeforeEach
 	public  void setUp(){
 		grupo.setNome("Nome Válido");
 		grupo = repository.save(grupo);
+		mvc = MockMvcBuilders
+            .webAppContextSetup(context)
+            .apply(springSecurity())
+            .build();
+		
 	}
+	@WithMockUser()
 	@Test
 	@Order(1)
 	void testGrupoController() {
 		assertNotNull(controller);
 	}
-
+	@WithMockUser()
 	@Test
 	@Order(2)
 	void testCreate() throws Exception {
@@ -59,7 +71,7 @@ class GrupoControllerTest {
 			.andExpect(model().attributeExists("method"))
 			.andExpect(view().name("grupos/form"));
 	}
-
+	@WithMockUser()
 	@Test
 	@Order(3)
 	void testStore() throws Exception {
@@ -69,7 +81,7 @@ class GrupoControllerTest {
 			.andExpect(model().attributeExists("success"))
 			.andExpect(model().attribute("success", getSaveSuccessMessage("grupo")));
 	}
-
+	@WithMockUser()
 	@Test
 	@Order(4)
 	void testStoreWithInvalidParams() throws Exception{
@@ -80,7 +92,7 @@ class GrupoControllerTest {
 		.andExpect(status().isOk())
 		;
 	}
-
+	@WithMockUser()
 	@Test
 	@Order(5)
 	void testIndex() throws Exception {
@@ -92,7 +104,7 @@ class GrupoControllerTest {
 		
 		
 	}
-
+	@WithMockUser()
 	@Test
 	@Order(6)
 	void testEdit() throws Exception {
@@ -101,7 +113,7 @@ class GrupoControllerTest {
 			.andExpect(view().name("grupos/form"));
 
 	}
-
+	@WithMockUser()
 	@Test
 	@Order(7)
 	void testUpdate() throws Exception {
@@ -111,7 +123,7 @@ class GrupoControllerTest {
 			.andExpect(model().attributeExists("success"))
 			.andExpect(model().attribute("success", getUpdateSuccessMessage("grupo")));
 	}
-
+	@WithMockUser()
 	@Test
 	@Order(8)
 	void testDelete() throws Exception {
@@ -119,7 +131,7 @@ class GrupoControllerTest {
 				.andExpect(model().attributeExists("success"))
 				.andExpect(model().attribute("success", getDeleteSuccessMessage("grupo")));
 	}
-
+	@WithMockUser()
 	@Test
 	@Order(10)
 	void testUpdateEmptyName() throws Exception {
@@ -129,7 +141,7 @@ class GrupoControllerTest {
 			.andExpect(model().attributeHasFieldErrors("grupo", "nome"));
 			
 	}
-
+	@WithMockUser()
 	@Test
 	@Order(11)
 	void testEditInvalidId() throws Exception {
@@ -138,7 +150,7 @@ class GrupoControllerTest {
 			.andExpect(model().attributeExists("error"));
 
 	}
-
+	@WithMockUser()
 	@Test
 	@Order(12)
 	void testDeleteInvalidId() throws Exception {

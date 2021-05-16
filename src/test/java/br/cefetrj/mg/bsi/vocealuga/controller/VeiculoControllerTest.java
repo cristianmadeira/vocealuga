@@ -17,15 +17,20 @@ import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import br.cefetrj.mg.bsi.vocealuga.faker.VeiculoFaker;
 import br.cefetrj.mg.bsi.vocealuga.model.Veiculo;
 import br.cefetrj.mg.bsi.vocealuga.repository.VeiculoRepository;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestMethodOrder(OrderAnnotation.class)
+
 public class VeiculoControllerTest {
     
     @Autowired
@@ -39,6 +44,8 @@ public class VeiculoControllerTest {
 
 
     private  Veiculo veiculo = new Veiculo();
+    @Autowired
+    private WebApplicationContext context;
 
     private Veiculo create(){
         return new VeiculoFaker().create();
@@ -46,15 +53,22 @@ public class VeiculoControllerTest {
     @BeforeEach
     public void setUp(){
         veiculo = repository.save(create());
+        mvc = MockMvcBuilders
+            .webAppContextSetup(context)
+            .apply(springSecurity())
+            .build();
     }
 
+    
     @Test
+    @WithMockUser()
     @Order(1)
     void testVeiculoController() {
         assertNotNull(controller);
     }
 
     @Test
+    @WithMockUser()
     @Order(2)
     void testCreate() throws Exception{
         this.mvc.perform(get("/veiculos/create"))
@@ -66,6 +80,7 @@ public class VeiculoControllerTest {
     }
 
     @Test
+    @WithMockUser()
     @Order(3)
     void testStore() throws Exception{ 
         this.mvc.perform(post("/veiculos")
@@ -81,6 +96,7 @@ public class VeiculoControllerTest {
     }
 
     @Test
+    @WithMockUser()
     @Order(5)
     void testIndex() throws Exception{
         this.mvc.perform(get("/veiculos"))
@@ -90,6 +106,7 @@ public class VeiculoControllerTest {
     }
 
     @Test
+    @WithMockUser()
     @Order(6)
     void testEdit() throws Exception {
         this.mvc.perform(get("/veiculos/{id}/edit", veiculo.getId()))
@@ -98,6 +115,7 @@ public class VeiculoControllerTest {
     }
 
     @Test
+    @WithMockUser()
     @Order(7)
     void testUpdate() throws Exception {
         this.mvc.perform(post("/veiculos/{id}/update", veiculo.getId())
@@ -116,6 +134,7 @@ public class VeiculoControllerTest {
     }
 
     @Test
+    @WithMockUser()
     @Order(8)
     void testDelete() throws Exception {
         this.mvc.perform(post("/veiculos/{id}/delete", veiculo.getId()))

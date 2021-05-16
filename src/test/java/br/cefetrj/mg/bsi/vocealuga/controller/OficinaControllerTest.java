@@ -9,15 +9,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import br.cefetrj.mg.bsi.vocealuga.faker.OficinaFaker;
 import br.cefetrj.mg.bsi.vocealuga.model.Oficina;
 import br.cefetrj.mg.bsi.vocealuga.repository.OficinaRepository;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -27,15 +32,29 @@ public class OficinaControllerTest {
     private MockMvc mvc;
     private OficinaRepository repository;
     private Oficina oficina;
-    
+    private WebApplicationContext context;
+
     @Autowired
-    public OficinaControllerTest(MockMvc mvc, OficinaRepository repository){
+    public OficinaControllerTest(
+        MockMvc mvc,
+        OficinaRepository repository,
+        WebApplicationContext context
+        ){
         this.mvc = mvc;
         this.repository = repository;
+        this.context = context;
         this.oficina = new OficinaFaker().create();
         oficina = this.repository.save(oficina);
     }
 
+    @BeforeEach
+    public void setup() {
+        mvc = MockMvcBuilders
+            .webAppContextSetup(context)
+            .apply(springSecurity())
+            .build();
+    }
+    @WithMockUser()
     @Test
     @Order(1)
     public void testIndex() throws Exception{
@@ -45,7 +64,7 @@ public class OficinaControllerTest {
             .andExpect(view().name("oficinas/index"));
         ;
     }
-
+@WithMockUser()
     @Test
     @Order(2)
     public void testSave() throws Exception{
@@ -55,7 +74,9 @@ public class OficinaControllerTest {
         .param("telefone","2112345678"))
             .andExpect(status().isOk())
             .andExpect(model().attributeExists("success"));
-    }
+    
+}
+@WithMockUser()
     @Test
     @Order(3)
     public void testsaveInvalidOficina() throws Exception{
@@ -63,7 +84,7 @@ public class OficinaControllerTest {
         .andExpect(status().isOk())
         .andExpect(model().attributeHasFieldErrors("oficina", "nome"));
     }
-
+@WithMockUser()
     @Test
     @Order(4)
     public void testeEditar() throws Exception{
@@ -72,6 +93,7 @@ public class OficinaControllerTest {
             .andExpect(model().attributeExists("oficina"))
             .andExpect(view().name("oficinas/form"));
     }
+    @WithMockUser()
     @Test
     @Order(5)
     public void testeEditarComIdInvalido() throws Exception{
@@ -80,7 +102,7 @@ public class OficinaControllerTest {
             .andExpect(model().attributeExists("error"))
             .andExpect(view().name("oficinas/index"));
     }
-
+@WithMockUser()
     @Test
     @Order(6)
     public void testUpdate() throws Exception{
@@ -93,7 +115,7 @@ public class OficinaControllerTest {
             .andExpect(model().attributeExists("success"))
             .andExpect(view().name("oficinas/index"));
     }
-
+@WithMockUser()
     @Test
     @Order(7)
     public void testUpdateWithInvalidId() throws Exception{
@@ -105,7 +127,7 @@ public class OficinaControllerTest {
             .andExpect(model().attributeHasFieldErrors("oficina","nome"))
             .andExpect(view().name("oficinas/form"));
     }
-
+@WithMockUser()
     @Test
     @Order(8)
     public void testDeleteWithValidId() throws Exception{
@@ -114,7 +136,7 @@ public class OficinaControllerTest {
         .andExpect(status().isOk())
         .andExpect(model().attributeExists("success"));
     }
-
+@WithMockUser()
     @Test
     @Order(9)
     public void testDeleteWithInvalidId() throws Exception{
