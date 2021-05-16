@@ -1,16 +1,19 @@
 package br.cefetrj.mg.bsi.vocealuga.model;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.ManyToAny;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.Where;
@@ -50,6 +53,9 @@ public class Pedido {
     @Column
     private float desconto;
     
+    @ManyToMany(mappedBy = "pedidos")
+    private List<Cliente> clientes;
+    
     @Column(updatable = false)
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -60,6 +66,7 @@ public class Pedido {
     
     @Column
     private LocalDateTime deletedAt;
+
 
     public Integer getId() {
         return this.id;
